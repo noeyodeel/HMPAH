@@ -40,4 +40,10 @@ public class User {
     private UserRoleEnum role;
 
 
+    public User(String username, String password,String nickname, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
+    }
 }
