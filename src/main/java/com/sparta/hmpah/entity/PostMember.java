@@ -24,4 +24,9 @@ public class PostMember {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public PostMember(Post post, User user){
+        this.post = post;
+        this.user = user;
+    }
 }
