@@ -39,5 +39,10 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-
+    public void updateInfo(String nickname,String profile,UserGenderEnum gender,Integer age){
+        this.nickname = nickname;
+        this.profile = profile;
+        this.gender = gender;
+        this.age = age;
+    }
 }
