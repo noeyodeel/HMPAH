@@ -22,6 +22,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
         String nickname = requestDto.getNickname();
 
+
         validUser(username);
 
         UserRoleEnum role = UserRoleEnum.USER;
@@ -31,9 +32,15 @@ public class UserService {
             }
             role = UserRoleEnum.ADMIN;
         }
+        // email 중복확인
+        String email = requestDto.getEmail();
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
 
         // 사용자 등록
-        User user = new User(username, password,nickname,role);
+        User user = new User(username, password,nickname,email,role);
         userRepository.save(user);
     }
     private void validUser(String username) {

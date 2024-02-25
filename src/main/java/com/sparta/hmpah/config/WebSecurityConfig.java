@@ -66,8 +66,13 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .permitAll()
                 .requestMatchers("/").permitAll()
+                .requestMatchers("/api/user/**").permitAll()
                 .requestMatchers("/user/**").permitAll()
                 .anyRequest().authenticated()
+        );
+        http.formLogin((formLogin) ->
+            formLogin
+                .loginPage("/user/login-page").permitAll()
         );
 
         // 필터 관리
