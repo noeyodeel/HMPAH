@@ -35,6 +35,7 @@ public class HomeController {
         return "login";
     }
 
+
 //    @GetMapping("/user/signup")
 //    public String signupPage() {
 //        return "signup";
@@ -54,6 +55,7 @@ public class HomeController {
 //
 //        return "redirect:/user/login-page";
 //    }
+
     @GetMapping("api/user/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response)
         throws JsonProcessingException {
