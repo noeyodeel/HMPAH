@@ -1,4 +1,4 @@
-package com.sparta.hmpah.dto;
+package com.sparta.hmpah.dto.responseDto;
 
 
 import lombok.Getter;
@@ -8,12 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KakaoUserInfoDto {
     private Long id;
-    private String nickname;
     private String email;
 
-    public KakaoUserInfoDto(Long id, String nickname, String email) {
+    public KakaoUserInfoDto(Long id, String email) {
         this.id = id;
-        this.nickname = nickname;
         this.email = email;
     }
 }

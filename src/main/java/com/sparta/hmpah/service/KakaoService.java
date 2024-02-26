@@ -3,8 +3,10 @@ package com.sparta.hmpah.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.hmpah.dto.KakaoUserInfoDto;
+import com.sparta.hmpah.dto.requestDto.AdditionalInfoRequest;
+import com.sparta.hmpah.dto.responseDto.KakaoUserInfoDto;
 import com.sparta.hmpah.entity.User;
+import com.sparta.hmpah.entity.UserGenderEnum;
 import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.jwt.JwtUtil;
 import com.sparta.hmpah.repository.UserRepository;
@@ -32,6 +34,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
+    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     public String kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -44,12 +47,12 @@ public class KakaoService {
         User kakoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         //4. JWT 토큰 반환
-        String createtoken = jwtUtil.createToken(kakoUser.getUsername(),kakoUser.getRole());
+        String createtoken = jwtUtil.createToken(kakoUser.getUsername(), kakoUser.getRole());
         return createtoken;
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        log.info("인가코드 :"+code);
+        log.info("인가코드 :" + code);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
             .fromUriString("https://kauth.kakao.com")
@@ -86,7 +89,7 @@ public class KakaoService {
     }
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-        log.info("acessToken :"+accessToken);
+        log.info("acessToken :" + accessToken);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
             .fromUriString("https://kapi.kakao.com")
@@ -118,9 +121,10 @@ public class KakaoService {
         String email = jsonNode.get("kakao_account")
             .get("email").asText();
 
-        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
-        return new KakaoUserInfoDto(id, nickname, email);
+        log.info("카카오 사용자 정보: " + id + ", " + email);
+        return new KakaoUserInfoDto(id, email);
     }
+
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
@@ -143,12 +147,49 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, kakaoId);
+                kakaoUser = new User(encodedPassword, email,
+                    UserRoleEnum.USER, kakaoId);
             }
 
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
+    }
+
+
+    public void updateKakaoUserNickname(Long id, AdditionalInfoRequest additionalInfo) {
+        User kakaoUser = userRepository.findByKakaoId(id).orElse(null);
+        String nickname = additionalInfo.getNickname();
+        String profile = additionalInfo.getProfile();
+        Integer age = additionalInfo.getAge();
+        UserGenderEnum gender = additionalInfo.getGender();
+        UserRoleEnum role = UserRoleEnum.USER;
+
+        if (kakaoUser != null && kakaoUser.getKakaoId() != null) {
+            // Kakao로 가입한 사용자의 nickname 업데이트
+            kakaoUser.nicknameUpdate(nickname);
+
+            // age, gender, profile이 null이 아니면 업데이트
+            if (age != null) {
+                kakaoUser.setAge(age);
+            }
+            if (gender != null) {
+                kakaoUser.setGender(gender);
+            }
+            if (profile != null && !profile.isEmpty()) {
+                kakaoUser.setProfile(profile);
+            }
+
+            if (additionalInfo.isAdmin()) {
+                if (!ADMIN_TOKEN.equals(additionalInfo.getAdminToken())) {
+                    throw new IllegalArgumentException("관리자 인증키가 틀려 등록이 불가능합니다.");
+                }
+                role = UserRoleEnum.ADMIN;
+                kakaoUser.setRole(role);
+            }
+            kakaoUser.setRole(role);
+            userRepository.save(kakaoUser);
+        }
     }
 
 

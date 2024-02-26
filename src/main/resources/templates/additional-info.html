@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    input {
+      width: calc(100% - 12px);
+      padding: 6px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <title>회원가입 추가 입력</title>
+</head>
+<body>
+
+<h2>회원가입 추가 입력</h2>
+
+<form id="additionalInfoForm">
+  <label for="nickname">Nickname:</label>
+  <input type="text" id="nickname" name="nickname" required>
+  <br>
+
+  <label for="profile">한줄소개:</label>
+  <input type="text" id="profile" name="profile">
+  <br>
+
+  <label>성별:</label>
+  <div>
+    <button type="button" onclick="selectGender('MALE')">남성</button>
+    <button type="button" onclick="selectGender('FEMALE')">여성</button>
+  </div>
+  <input type="hidden" id="gender" name="gender" required>
+  <br>
+
+  <label for="age">나이:</label>
+  <input type="text" id="age" name="age">
+  <br>
+  <div>
+    <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()"
+           style="margin-top: 40px;">관리자
+    <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호"
+           class="login-input-box" style="display:none">
+  </div>
+
+  <button type="button" onclick="submitAdditionalInfo()">Submit</button>
+</form>
+
+<script>
+  function onclickAdmin() {
+    // Get the checkbox
+    var checkBox = document.getElementById("admin-check");
+    // Get the output text
+    var box = document.getElementById("admin-token");
+
+    // If the checkbox is checked, display the output text
+    if (checkBox.checked == true) {
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  function selectGender(selectedGender) {
+    document.getElementById("gender").value = selectedGender;
+
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      if (button.textContent.toLowerCase() === selectedGender.toLowerCase()) {
+        button.style.backgroundColor = '#4CAF50';
+        button.style.color = 'white';
+      } else {
+        button.style.backgroundColor = '';
+        button.style.color = '';
+      }
+    });
+  }
+
+  const href = location.href;
+  const host = 'http://' + window.location.host;
+
+  function submitAdditionalInfo() {
+    var nickname = document.getElementById("nickname").value;
+    var profile = document.getElementById("profile").value;
+    var gender = document.getElementById("gender").value;
+    var age = document.getElementById("age").value;
+
+    // Ajax로 서버에 전달
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/user/additional-info", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.setRequestHeader("Authorization", "Bearer " + getCookie("Authorization"));
+
+    // 서버로 전달할 데이터
+    var data = {
+      "nickname": nickname,
+      "profile": profile,
+      "gender": gender,
+      "age": age
+    };
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // 서버 응답 처리
+          console.log("Request successful");
+          window.location.href = host; // 성공 시 홈페이지로 이동
+        } else {
+          console.error("Request failed");
+          alert("서버 응답 실패. 다시 시도해주세요.");
+        }
+      }
+    };
+
+    xhr.send(JSON.stringify(data));
+  }
+
+  // 쿠키에서 값을 가져오는 함수
+  function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  }
+</script>
+
+</body>
+</html>
