@@ -69,10 +69,10 @@ public class PostController {
     return postService.getPostListByTitle(title, userDetails.getUser());
   }
 
-  @GetMapping("/{postid}")
+  @GetMapping("/{postId}")
   @Operation(summary = "게시글 조회 (게시글 ID)", description = "ID를 통해 게시글을 조회한다.")
-  public PostResponse getPostById(@PathVariable Long postid ,@AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.getPostById(postid, userDetails.getUser());
+  public PostResponse getPostById(@PathVariable Long postId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.getPostById(postId, userDetails.getUser());
   }
 
   @PostMapping
@@ -81,28 +81,28 @@ public class PostController {
     return postService.createPost(postRequest, userDetails.getUser());
   }
 
-  @PutMapping("/{postid}")
+  @PutMapping("/{postId}")
   @Operation(summary = "게시글 수정 (게시글 ID)", description = "ID를 통해 게시글을 수정한다.")
-  public PostResponse updatePost(@PathVariable Long postid, @RequestBody PostRequest postRequest, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.updatePost(postid, postRequest, userDetails.getUser());
+  public PostResponse updatePost(@PathVariable Long postId, @RequestBody PostRequest postRequest, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.updatePost(postId, postRequest, userDetails.getUser());
   }
 
-  @DeleteMapping("/{postid}")
+  @DeleteMapping("/{postId}")
   @Operation(summary = "게시글 삭제 (게시글 ID)", description = "ID를 통해 게시글을 삭제한다.")
-  public String deletePost(@PathVariable Long postid ,@AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.deletePost(postid, userDetails.getUser());
+  public String deletePost(@PathVariable Long postId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.deletePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/like/{postid}")
+  @PostMapping("/like/{postId}")
   @Operation(summary = "게시글 좋아요", description = "ID를 통해 게시글을 좋아요 한다.")
-  public String likePost(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.likePost(postid, userDetails.getUser());
+  public String likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.likePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/join/{postid}")
+  @PostMapping("/join/{postId}")
   @Operation(summary = "모임 참여", description = "ID를 통해 게시글에 참여한다.")
-  public String joinPost(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.joinPost(postid, userDetails.getUser());
+  public String joinPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.joinPost(postId, userDetails.getUser());
   }
 
 }
