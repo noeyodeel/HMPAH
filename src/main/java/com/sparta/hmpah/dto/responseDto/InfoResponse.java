@@ -12,17 +12,22 @@ public class InfoResponse {
     private String nickname;
     private String profile;
     private Integer age;
-    private UserGenderEnum gender;
+    private String gender;
     private Integer followerCount;
     private Integer followingCount;
     private List<Post> posts;
 
-    public InfoResponse(String username, String nickname, String profile, UserGenderEnum gender,Integer age,Integer followerCount, Integer followingCount,List<Post> posts) {
+    public InfoResponse(String username, String nickname, String profile, String gender,Integer age,Integer followerCount, Integer followingCount,List<Post> posts) {
         this.username = username;
         this.nickname = nickname;
         this.profile = profile;
         this.age = age;
-        this.gender = gender;
+        if(gender == null){
+            this.gender = "FEMALE";
+        }
+        else {
+            this.gender = gender;
+        }
         this.followerCount = followerCount;
         this.followingCount = followingCount;
         this.posts = posts;

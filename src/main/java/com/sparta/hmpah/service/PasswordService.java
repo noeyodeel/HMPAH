@@ -27,11 +27,11 @@ public class PasswordService {
 
 
         //비밀번호와 비밀번호확인이 다른 경우
-        if(passwordRequest.getNewPassword().equals(passwordRequest.getCheckPassword())){
+        if(!passwordRequest.getNewPassword().equals(passwordRequest.getCheckPassword())){
             return new PasswordResponse("비밀번호와 비밀번호 확인이 다릅니다.");
         }
         //기존 비밀번호가 다를 경우
-        if(!passwordEncoder.matches(findUser.getPassword(), passwordRequest.getOldPassword())){
+        if(!passwordEncoder.matches(passwordRequest.getOldPassword(),findUser.getPassword())){
             return new PasswordResponse("현재 비밀번호가 올바르지 않습니다.");
         }
         //이전 비밀번호랑 같을 때

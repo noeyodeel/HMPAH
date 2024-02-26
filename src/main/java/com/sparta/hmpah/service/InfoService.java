@@ -5,6 +5,7 @@ import com.sparta.hmpah.dto.requestDto.InfoRequest;
 import com.sparta.hmpah.dto.responseDto.InfoResponse;
 import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.User;
+import com.sparta.hmpah.entity.UserGenderEnum;
 import com.sparta.hmpah.repository.FollowRepository;
 import com.sparta.hmpah.repository.PostRepository;
 import com.sparta.hmpah.repository.UserRepository;
@@ -32,7 +33,7 @@ public class InfoService {
         return new InfoResponse(findUser.getUsername(),
                 findUser.getNickname(),
                 findUser.getProfile(),
-                findUser.getGender(),
+                findUser.getGender().getValue(),
                 findUser.getAge(),
                 followerCount,
                 followingCount,
@@ -45,7 +46,7 @@ public class InfoService {
         //전략 -> 입력값이 없으면 이전 데이터 그대로 (nickname)
         if(profileRequest.getNickname().isEmpty()) profileRequest.setNickname(findUser.getNickname());
 
-        findUser.updateInfo(profileRequest.getNickname(), profileRequest.getProfile(),profileRequest.getGender(), profileRequest.getAge());
+        findUser.updateInfo(profileRequest.getNickname(), profileRequest.getProfile(), UserGenderEnum.valueOf(profileRequest.getGender()), profileRequest.getAge());
         //follower
         int followerCount = followRepository.findByFollowing(user).size();
         //following
@@ -55,7 +56,7 @@ public class InfoService {
         return new InfoResponse(findUser.getUsername(),
                 findUser.getNickname(),
                 findUser.getProfile(),
-                findUser.getGender(),
+                findUser.getGender().getValue(),
                 findUser.getAge(),
                 followerCount,
                 followingCount,
