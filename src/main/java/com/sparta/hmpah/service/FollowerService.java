@@ -3,8 +3,10 @@ package com.sparta.hmpah.service;
 import com.sparta.hmpah.dto.responseDto.FollowerResponse;
 import com.sparta.hmpah.dto.responseDto.InfoResponse;
 import com.sparta.hmpah.entity.Follow;
+import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.User;
 import com.sparta.hmpah.repository.FollowRepository;
+import com.sparta.hmpah.repository.PostRepository;
 import com.sparta.hmpah.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.List;
 public class FollowerService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public List<FollowerResponse> showFollowers(User user) {
@@ -34,15 +37,29 @@ public class FollowerService {
         return followerResponses;
     }
 
-    public InfoResponse showFollowerInfo(String followerUsername) {
-        User follower = userRepository.findByUsername(followerUsername).orElseThrow();
-        return new InfoResponse(follower.getUsername(), follower.getNickname(), follower.getProfile(), follower.getGender(), follower.getAge());
+    public InfoResponse showFollowerInfo(Long followerId) {
+        User follower = userRepository.findById(followerId).orElseThrow();
+        //follower
+        int followerCount = followRepository.findByFollowing(follower).size();
+        //following
+        int followingCount = followRepository.findByFollower(follower).size();
+        //post
+        List<Post> postsByFollower = postRepository.findAllByUser(follower);
+        return new InfoResponse(follower.getUsername(),
+                follower.getNickname(),
+                follower.getProfile(),
+                follower.getGender(),
+                follower.getAge(),
+                followerCount,
+                followingCount,
+                postsByFollower
+        );
     }
 
     @Transactional
-    public FollowerResponse deleteFollower(User user,String followerUsername){
+    public FollowerResponse deleteFollower(User user,Long followerId){
         User findUser = userRepository.findById(user.getId()).orElseThrow();
-        User follower = userRepository.findByUsername(followerUsername).orElseThrow();
+        User follower = userRepository.findById(followerId).orElseThrow();
 
         followRepository.deleteByFollowerAndFollowing(follower,findUser);
         return new FollowerResponse(follower.getUsername(), follower.getNickname());

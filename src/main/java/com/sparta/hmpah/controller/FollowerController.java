@@ -22,14 +22,14 @@ public class FollowerController {
         return followerService.showFollowers(userDetails.getUser());
     }
 
-    @GetMapping("/{followerUsername}")
-    public InfoResponse showFollower(@PathVariable("followerUsername") String followerUsername) {
-        return followerService.showFollowerInfo(followerUsername);
+    @GetMapping("/{followerId}")
+    public InfoResponse showFollower(@PathVariable("followerId") Long followerId) {
+        return followerService.showFollowerInfo(followerId);
     }
 
-    @DeleteMapping("/{followerUsername}")
-    public FollowerResponse deleteFollower(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("followerUsername") String followerUsername) {
-        return followerService.deleteFollower(userDetails.getUser(), followerUsername);
+    @DeleteMapping("/{followerId}")
+    public FollowerResponse deleteFollower(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("followerId") Long followerId) {
+        return followerService.deleteFollower(userDetails.getUser(), followerId);
     }
 
 }

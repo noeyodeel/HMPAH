@@ -21,21 +21,21 @@ public class FollowingController {
         return followingService.showFollowings(userDetails.getUser());
     }
 
-    @GetMapping("/{followingUsername}")
-    public InfoResponse showFollowing(@PathVariable("followingUsername") String followingUsername) {
-        return followingService.showFollowingInfo(followingUsername);
+    @GetMapping("/{followingId}")
+    public InfoResponse showFollowing(@PathVariable("followingId") Long followingId) {
+        return followingService.showFollowingInfo(followingId);
     }
 
-    @PostMapping("/{followingUsername}")
+    @PostMapping("/{followingId}")
     public FollowingResponse following(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                       @PathVariable("followingUsername") String followingUsername) {
-        return followingService.following(userDetails.getUser(), followingUsername);
+                                       @PathVariable("followingId") Long followingId) {
+        return followingService.following(userDetails.getUser(), followingId);
     }
 
-    @DeleteMapping("/{followingUsername}")
+    @DeleteMapping("/{followingId}")
     public FollowingResponse deleteFollowing(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @PathVariable("followingUsername") String followingUsername) {
-        return followingService.deleteFollowing(userDetails.getUser(), followingUsername);
+                                             @PathVariable("followingId") Long followingId) {
+        return followingService.deleteFollowing(userDetails.getUser(), followingId);
     }
 
 }
