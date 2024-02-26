@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,23 +27,14 @@ public class PostController {
 
   private final PostService postService;
 
-
-  @GetMapping("/all")
-  @Operation(summary = "게시글 목록 조회 (전체)", description = "전체 게시글 목록을 조회한다.")
-  public List<PostResponse> getPostList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return postService.getPostList(userDetails.getUser());
-  }
-
-  @GetMapping("/status/{status}")
-  @Operation(summary = "게시글 목록 조회 (상태)", description = "상태값을 통해 게시글 목록을 조회한다.")
-  public List<PostResponse> getPostListByStatus(@PathVariable String status, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.getPostListByStatus(status, userDetails.getUser());
-  }
-
-  @GetMapping("/locations/{location}")
-  @Operation(summary = "게시글 목록 조회 (지역)", description = "지역을 통해 게시글 목록을 조회한다.")
-  public List<PostResponse> getPostListByLocation(@PathVariable String location, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.getPostListByLocation(location, userDetails.getUser());
+  @GetMapping
+  @Operation(summary = "게시글 목록 조회(옵션)", description = "상태, 지역, 제목 옵션을 통해 게시글 목록을 조회한다.")
+  public List<PostResponse> getPostListByOption(
+      @RequestParam(required = false) String status,
+      @RequestParam(required = false) String location,
+      @RequestParam(required = false) String title,
+      @AuthenticationPrincipal UserDetailsImpl userDetails){
+    return postService.getPostListByOption(status, location, title, userDetails.getUser());
   }
 
   @GetMapping("/follows")
@@ -51,22 +43,18 @@ public class PostController {
     return postService.getPostListByFollow(userDetails.getUser());
   }
 
+
   @GetMapping("/joins")
   @Operation(summary = "게시글 목록 조회 (참여)", description = "참여중인 게시글 목록을 조회한다.")
   public List<PostResponse> getPostListByMember(@AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.getPostListByMember(userDetails.getUser());
   }
 
+
   @GetMapping("/myposts")
   @Operation(summary = "게시글 목록 조회 (자신)", description = "자신의 게시글 목록을 조회한다.")
   public List<PostResponse> getMyPostList(@AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.getMyPostList(userDetails.getUser());
-  }
-
-  @GetMapping("/titles/{title}")
-  @Operation(summary = "게시글 목록 조회 (제목)", description = "제목을 통해 게시글 목록을 조회한다.")
-  public List<PostResponse> getPostListByTitle(@PathVariable String title ,@AuthenticationPrincipal UserDetailsImpl userDetails){
-    return postService.getPostListByTitle(title, userDetails.getUser());
   }
 
   @GetMapping("/{postId}")

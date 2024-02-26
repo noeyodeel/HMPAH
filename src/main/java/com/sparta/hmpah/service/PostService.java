@@ -45,6 +45,13 @@ public class PostService {
     return createPostResponseList(postList, user);
   }
 
+  public List<PostResponse> getPostListByStatusAndLocation(String status, String location, User user) {
+    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
+    LocationEnum locationEnum = LocationEnum.valueOf(location);
+    List<Post> postList = postRepository.findAllByStatusAndLocation(postStatusEnum, locationEnum);
+    return createPostResponseList(postList, user);
+  }
+
 
   public List<PostResponse> getPostListByLocation(String location, User user) {
     LocationEnum locationEnum = LocationEnum.valueOf(location);
@@ -79,17 +86,15 @@ public class PostService {
     return createPostResponseList(postList, user);
   }
 
-  public List<PostResponse> getPostListByTitle(String title, User user) {
-    List<Post> allPost = postRepository.findAll();
-    List<Post> postList = new ArrayList<>();
-
-    for (Post post : allPost) {
+  public List<PostResponse> filterPostListByTitle(List<Post> postList, String title, User user) {
+    List<Post> posts = new ArrayList<>();
+    for (Post post : postList) {
       if(post.getTitle().contains(title)){
-        postList.add(post);
+        posts.add(post);
       }
     }
 
-    return createPostResponseList(postList, user);
+    return createPostResponseList(posts, user);
   }
 
 
@@ -218,4 +223,55 @@ public class PostService {
     else
       return false;
   }
+
+  public List<PostResponse> getPostListByOption(String status, String location, String title, User user) {
+    Boolean isStatus = !(status==null);
+    Boolean isLocation = !(location==null);
+    Boolean isTitle = !(title==null);
+    List<Post> postList = new ArrayList<>();
+    if (true == !isStatus && !isLocation && !isTitle) {
+      return getPostList(user);
+    } else if (true == isStatus && !isLocation && !isTitle) {
+      return getPostListByStatus(status, user);
+    } else if (true == !isStatus && isLocation && !isTitle) {
+      return getPostListByLocation(location, user);
+    } else if (true == !isStatus && !isLocation && isTitle) {
+      return getPostListByTitle(title, user);
+    } else if (true == isStatus && isLocation && !isTitle) {
+      return getPostListByStatusAndLocation(status, location, user);
+    } else if (true == isStatus && !isLocation && isTitle) {
+      return getPostListByStatusAndTitle(status, title, user);
+    } else if (true == !isStatus && isLocation && isTitle) {
+      return getPostListByLocationAndTitle(location, title, user);
+    } else if (true == isStatus && isLocation && isTitle) {
+      return getPostListByStatusAndLocationAndTitle(status, location, title, user);
+    }
+    else
+      throw new IllegalArgumentException("오류입니다.");
+  }
+
+  private List<PostResponse> getPostListByStatusAndLocationAndTitle(String status, String location, String title, User user) {
+    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
+    LocationEnum locationEnum = LocationEnum.valueOf(location);
+    List<Post> postList = postRepository.findAllByStatusAndLocation(postStatusEnum, locationEnum);
+    return filterPostListByTitle(postList, title, user);
+  }
+
+  private List<PostResponse> getPostListByLocationAndTitle(String location, String title, User user) {
+    LocationEnum locationEnum = LocationEnum.valueOf(location);
+    List<Post> postList = postRepository.findAllByLocation(locationEnum);
+    return filterPostListByTitle(postList, title, user);
+  }
+
+  private List<PostResponse> getPostListByStatusAndTitle(String status, String title, User user) {
+    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
+    List<Post> postList = postRepository.findAllByStatus(postStatusEnum);
+    return filterPostListByTitle(postList, title, user);
+  }
+
+  private List<PostResponse> getPostListByTitle(String title, User user){
+    List<Post> postList = postRepository.findAll();
+    return filterPostListByTitle(postList, title, user);
+  }
+
 }

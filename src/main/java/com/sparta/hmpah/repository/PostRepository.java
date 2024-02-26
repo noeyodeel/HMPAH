@@ -15,4 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findAllByLocation(LocationEnum location);
 
   List<Post> findAllByUser(User following);
+
+  List<Post> findAllByStatusAndLocation(PostStatusEnum postStatusEnum, LocationEnum locationEnum);
 }
