@@ -48,7 +48,7 @@ public class FollowerService {
         return new InfoResponse(follower.getUsername(),
                 follower.getNickname(),
                 follower.getProfile(),
-                follower.getGender(),
+                follower.getGender().getValue(),
                 follower.getAge(),
                 followerCount,
                 followingCount,

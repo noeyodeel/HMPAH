@@ -31,7 +31,7 @@ public class FollowingService {
         List<FollowingResponse> followingResponses = new ArrayList<>();
 
         for (Follow following : followings) {
-            followingResponses.add(new FollowingResponse(following.getFollower().getUsername(), following.getFollower().getNickname()));
+            followingResponses.add(new FollowingResponse(following.getFollowing().getUsername(), following.getFollowing().getNickname()));
         }
 
         return followingResponses;
@@ -48,7 +48,7 @@ public class FollowingService {
         return new InfoResponse(following.getUsername(),
                 following.getNickname(),
                 following.getProfile(),
-                following.getGender(),
+                following.getGender().getValue(),
                 following.getAge(),
                 followerCount,
                 followingCount,

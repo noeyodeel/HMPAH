@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/followings")
 public class FollowingController {
-    private FollowingService followingService;
+    private final FollowingService followingService;
 
     @GetMapping
     public List<FollowingResponse> showFollowing(@AuthenticationPrincipal UserDetailsImpl userDetails) {
