@@ -45,4 +45,8 @@ public class User {
         this.gender = gender;
         this.age = age;
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

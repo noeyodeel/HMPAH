@@ -13,16 +13,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/profiles")
 public class InfoController {
-    private final InfoService profileService;
+    private final InfoService infoService;
     @GetMapping
     public InfoResponse showProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return profileService.showProfile(userDetails.getUser());
+        return infoService.showProfile(userDetails.getUser());
     }
 
     @PutMapping
     public InfoResponse updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid InfoRequest profileRequest) {
-        return profileService.updateProfile(userDetails.getUser(), profileRequest);
+        return infoService.updateProfile(userDetails.getUser(), profileRequest);
     }
-//    @PutMapping("/password")
 
 }
