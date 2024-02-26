@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SignResponse {
+public class SignupResponse {
     private String msg;
     private int statusCode;
 }

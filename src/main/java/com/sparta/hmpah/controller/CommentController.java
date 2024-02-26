@@ -37,6 +37,7 @@ public class CommentController {
   @PostMapping("/create")//댓글 생성
   public CommentResponse createComment(@RequestBody CommentRequest requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    log.info(userDetails.getUsername());
     log.info("create 호출");
     return commentService.createComment(requestDto, userDetails);
   }

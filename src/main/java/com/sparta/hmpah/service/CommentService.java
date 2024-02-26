@@ -46,26 +46,8 @@ public class CommentService {
 
   public CommentResponse createComment(CommentRequest requestDto,
       UserDetailsImpl userDetails) { // 댓글 생성
-
-//        User user = new User();
-//        user.setUsername("아이디1");
-//        user.setPassword("비밀번호");
-//        user.setProfile("프로필");
-//        user.setNickname("닉네임1");
-//        user.setGender(UserGenderEnum.FEMALE);
-//        user.setAge(1);
-//        user.setRole(UserRoleEnum.ADMIN);
-//        userRepository.save(user);
-//        Post post = new Post();
-//        post.setTitle("제목1");
-//        post.setContent("내용");
-//        post.setMaxCount(5);
-//        post.setStatus(PostStatusEnum.RECRUTING);
-//        post.setLocation(LocationEnum.HONGDAE);
-//        post.setUser(user);
-//        postRepository.save(post);
-    Post post = postRepository.findById(1L).orElseThrow();
-    User user = userRepository.findById(1L).orElseThrow();
+    Post post = postRepository.findById(requestDto.getPostId()).orElseThrow();
+    User user = userDetails.getUser();
     Comment comment = new Comment(requestDto, user, post);
     return new CommentResponse(commentRepository.save(comment));
   }
@@ -75,21 +57,19 @@ public class CommentService {
       UserDetailsImpl userDetails) { //댓글 id를 기준으로 댓글 update
     Comment comment = findyComment(id);
     System.out.println(comment.toString());
-    User user = userRepository.findById(1L).orElseThrow();
+    User user = userDetails.getUser();
     if (validateUsername(comment, user)) { // 작성자와 로그인한 user가 일치할 경우에만 업데이트
-//            comment.update(requestDto, userDetails);
       comment.update(requestDto);
       System.out.println(comment.toString());
       return comment;
     } else {
-
       throw new IllegalArgumentException("선택한 댓글은 존재하지 않습니다.");
     }
   }
 
   public Long deleteComment(Long id, UserDetailsImpl userDetails) { //댓글 id를 기준으로 댓글삭제
     Comment comment = findyComment(id);
-    User user = userRepository.findById(1L).orElseThrow();
+    User user = userDetails.getUser();
     if (validateUsername(comment, user)) {
       commentRepository.delete(comment);
       return id;
@@ -127,34 +107,37 @@ public class CommentService {
   }
 
   public Long createCommentLike(CommentLikeRequest requestDto, UserDetailsImpl userDetails) {
-    User user = userRepository.findById(3L).orElseThrow();
+    User user = userDetails.getUser();
     Long commentId = requestDto.getCommentId();
     Comment comment = commentRepository.findById(commentId).orElseThrow();
-    if(commentLikeState(comment,user)){
+    if (commentLikeState(comment, user)) {
       commentLikeRepository.save(new CommentLike(comment, user));
     }
     return countByCommentId(commentId);
   }
 
   public Long deleteCommentLike(Long commentId, UserDetailsImpl userDetails) {//추천 삭제
-    if(existsByCommentIdAndUserId(commentId,3L)){//추천이 존재할 경우에만 삭제
-      CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserId(commentId,3L);
+    Long userId = userDetails.getUser().getId();
+    if (existsByCommentIdAndUserId(commentId, userId)) {//추천이 존재할 경우에만 삭제
+      CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
       commentLikeRepository.delete(commentLike);
     }
-    return  countByCommentId(commentId);
+    return countByCommentId(commentId);
   }
 
-  public boolean existsByCommentIdAndUserId(Long commentId, Long userId){ //이미 추천했다면 true 아니면 false
+  public boolean existsByCommentIdAndUserId(Long commentId, Long userId) { //이미 추천했다면 true 아니면 false
     return commentLikeRepository.existsByCommentIdAndUserId(commentId, userId);
   }
 
-  public boolean checkWriter(Long commentId, String username){
-    Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 postId 입니다."));
+  public boolean checkWriter(Long commentId, String username) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 postId 입니다."));
     return username.equals(comment.getUser().getUsername());
   }
 
-  public boolean commentLikeState(Comment comment, User user){
-    return (!existsByCommentIdAndUserId(comment.getId(), user.getId()) && !checkWriter(comment.getId(), user.getUsername()));
+  public boolean commentLikeState(Comment comment, User user) {
+    return (!existsByCommentIdAndUserId(comment.getId(), user.getId()) && !checkWriter(
+        comment.getId(), user.getUsername()));
   }
 
 }
