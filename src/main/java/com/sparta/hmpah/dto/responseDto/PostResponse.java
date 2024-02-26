@@ -16,9 +16,9 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
-    private LocationEnum location;
+    private String location;
     private String nickname;
-    private PostStatusEnum status;
+    private String status;
     private Integer maxCount;
     private Integer currentCount;
     private LocalDateTime createdAt;
@@ -30,14 +30,14 @@ public class PostResponse {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.location = post.getLocation();
+        this.location = post.getLocation().getLabel();
         this.nickname = post.getUser().getNickname();
         this.maxCount = post.getMaxCount();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.currentCount = currentCount;
         this.likescnt = likescnt;
-        this.status = post.getStatus();
+        this.status = post.getStatus().getLabel();
         this.isMember = isMember;
     }
 

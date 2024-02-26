@@ -2,12 +2,14 @@ package com.sparta.hmpah.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "post_likes")
+@NoArgsConstructor
 public class PostLike {
 
     @Id

@@ -44,8 +44,8 @@ public class Post extends TimeStamped {
     public Post(PostRequest postRequest, User user) {
         this.title = postRequest.getTitle();
         this.content = postRequest.getContent();
-        this.maxCount = postRequest.getMaxCount();
-        this.location = postRequest.getLocation();
+        this.maxCount = postRequest.getMaxcount();
+        this.location = LocationEnum.getEnum(postRequest.getLocation());
         this.user = user;
         this.status = RECRUTING;
     }
@@ -53,8 +53,8 @@ public class Post extends TimeStamped {
     public void update(PostRequest postRequest) {
         this.title = postRequest.getTitle();
         this.content = postRequest.getContent();
-        this.maxCount = postRequest.getMaxCount();
-        this.location = postRequest.getLocation();
+        this.maxCount = postRequest.getMaxcount();
+        this.location = LocationEnum.getEnum(postRequest.getLocation());
     }
 
     public void updateStatus(Integer currentCount) {

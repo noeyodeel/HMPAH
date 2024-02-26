@@ -3,9 +3,11 @@ package com.sparta.hmpah.service;
 import com.sparta.hmpah.dto.requestDto.PostRequest;
 import com.sparta.hmpah.dto.responseDto.PostResponse;
 import com.sparta.hmpah.entity.Comment;
+import com.sparta.hmpah.entity.LocationEnum;
 import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.PostLike;
 import com.sparta.hmpah.entity.PostMember;
+import com.sparta.hmpah.entity.PostStatusEnum;
 import com.sparta.hmpah.entity.User;
 import com.sparta.hmpah.repository.CommentLikeRepository;
 import com.sparta.hmpah.repository.CommentRepository;
@@ -14,6 +16,7 @@ import com.sparta.hmpah.repository.PostLikeRepository;
 import com.sparta.hmpah.repository.PostMemberRepository;
 import com.sparta.hmpah.repository.PostRepository;
 import com.sparta.hmpah.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostService {
 
-  private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
   private final PostLikeRepository postLikeRepository;
@@ -38,13 +40,15 @@ public class PostService {
   }
 
   public List<PostResponse> getPostListByStatus(String status, User user) {
-    List<Post> postList = postRepository.findAllByStatus(status);
+    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
+    List<Post> postList = postRepository.findAllByStatus(postStatusEnum);
     return createPostResponseList(postList, user);
   }
 
 
   public List<PostResponse> getPostListByLocation(String location, User user) {
-    List<Post> postList = postRepository.findAllByLocation(location);
+    LocationEnum locationEnum = LocationEnum.valueOf(location);
+    List<Post> postList = postRepository.findAllByLocation(locationEnum);
     return createPostResponseList(postList, user);
   }
 
@@ -94,6 +98,7 @@ public class PostService {
     return createPostResponse(post, user);
   }
 
+  @Transactional
   public PostResponse createPost(PostRequest postRequest, User user) {
     Post post = postRepository.save(new Post(postRequest, user));
     postMemberRepository.save(new PostMember(post, user));
@@ -101,6 +106,7 @@ public class PostService {
     return createPostResponse(post, user);
   }
 
+  @Transactional
   public PostResponse updatePost(Long postid, PostRequest postRequest, User user) {
     Post post = getPostById(postid);
 
@@ -111,6 +117,7 @@ public class PostService {
     return createPostResponse(post, user);
   }
 
+  @Transactional
   public String deletePost(Long postid, User user) {
     Post post = getPostById(postid);
 
@@ -130,6 +137,7 @@ public class PostService {
     return "삭제되었습니다.";
   }
 
+  @Transactional
   public String likePost(Long postid, User user) {
     Post post = getPostById(postid);
 
@@ -148,6 +156,7 @@ public class PostService {
     }
   }
 
+  @Transactional
   public String joinPost(Long postid, User user) {
     Post post = getPostById(postid);
 
@@ -161,6 +170,8 @@ public class PostService {
       return "게시물에 참여를 취소합니다.";
     }
     else {
+      if(post.getStatus().equals(PostStatusEnum.COMPLETED))
+        return "모집인원이 가득 찼습니다.";
       postMemberRepository.save(new PostMember(post, user));
       return "게시물에 참여하셨습니다.";
     }
@@ -179,6 +190,7 @@ public class PostService {
     return postMember.isPresent();
   }
 
+  @Transactional
   public List<PostResponse> createPostResponseList(List<Post> postList, User user){
     List<PostResponse> postResponseList = new ArrayList<>();
     for (Post post : postList) {
@@ -188,6 +200,7 @@ public class PostService {
     return postResponseList;
   }
 
+  @Transactional
   public PostResponse createPostResponse(Post post, User user){
     post.updateStatus(getCurrentCount(post));
     return new PostResponse(post, getCurrentCount(post), getLikescnt(post), getIsMember(post, user));
@@ -200,7 +213,7 @@ public class PostService {
   }
 
   public Boolean getIsOwner(Post post, User user){
-    if(post.getUser().getUsername().equals(user.getUsername()))
+    if(post.getUser().getId().equals(user.getId()))
       return true;
     else
       return false;

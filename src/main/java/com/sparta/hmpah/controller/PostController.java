@@ -99,7 +99,7 @@ public class PostController {
     return postService.likePost(postid, userDetails.getUser());
   }
 
-  @PostMapping("/posts/join/{postid}")
+  @PostMapping("/join/{postid}")
   @Operation(summary = "모임 참여", description = "ID를 통해 게시글에 참여한다.")
   public String joinPost(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.joinPost(postid, userDetails.getUser());
