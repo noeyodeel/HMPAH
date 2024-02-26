@@ -2,6 +2,7 @@ package com.sparta.hmpah.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.hmpah.dto.requestDto.LoginRequest;
+import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.jwt.JwtMessage;
 import com.sparta.hmpah.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -51,9 +52,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         HttpServletResponse response, FilterChain chain, Authentication authResult)
         throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        // UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
+        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username);
+        String token = jwtUtil.createToken(username,role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         jwtMessage.messageToClient(response, 200, "로그인 성공", "success");

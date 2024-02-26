@@ -16,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String username;
 
     @Column(nullable = false)
@@ -42,13 +42,28 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    private Long kakaoId;
 
 
-    public User(String username, String password,String nickname, String email ,UserRoleEnum role) {
+    public User(String username, String password, String nickname, String email,
+        UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.role = role;
+    }
+
+    public User(String nickname, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId = kakaoId;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }

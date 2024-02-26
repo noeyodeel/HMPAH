@@ -55,15 +55,16 @@ public class HomeController {
         return "redirect:/user/login-page";
     }
     @GetMapping("api/user/kakao/callback")
-    public String kakoLogin(@RequestParam String code, HttpServletResponse response)
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response)
         throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
 
         // Cookie 생성 및 직접 브라우저에 Set
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:/";
+        return "redirect:/user/kakao/login";
     }
+
 }
