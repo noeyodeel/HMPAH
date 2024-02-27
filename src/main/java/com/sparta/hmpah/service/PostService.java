@@ -34,31 +34,6 @@ public class PostService {
   private final PostMemberRepository postMemberRepository;
   private final FollowRepository followRepository;
 
-  public List<PostResponse> getPostList(User user) {
-    List<Post> postList = postRepository.findAll();
-    return createPostResponseList(postList, user);
-  }
-
-  public List<PostResponse> getPostListByStatus(String status, User user) {
-    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
-    List<Post> postList = postRepository.findAllByStatus(postStatusEnum);
-    return createPostResponseList(postList, user);
-  }
-
-  public List<PostResponse> getPostListByStatusAndLocation(String status, String location, User user) {
-    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
-    LocationEnum locationEnum = LocationEnum.valueOf(location);
-    List<Post> postList = postRepository.findAllByStatusAndLocation(postStatusEnum, locationEnum);
-    return createPostResponseList(postList, user);
-  }
-
-
-  public List<PostResponse> getPostListByLocation(String location, User user) {
-    LocationEnum locationEnum = LocationEnum.valueOf(location);
-    List<Post> postList = postRepository.findAllByLocation(locationEnum);
-    return createPostResponseList(postList, user);
-  }
-
   public List<PostResponse> getPostListByFollow(User user) {
     List<User> followings = followRepository.findAllByFollower(user);
     List<Post> postList = new ArrayList<>();
@@ -85,18 +60,6 @@ public class PostService {
     List<Post> postList = postRepository.findAllByUser(user);
     return createPostResponseList(postList, user);
   }
-
-  public List<PostResponse> filterPostListByTitle(List<Post> postList, String title, User user) {
-    List<Post> posts = new ArrayList<>();
-    for (Post post : postList) {
-      if(post.getTitle().contains(title)){
-        posts.add(post);
-      }
-    }
-
-    return createPostResponseList(posts, user);
-  }
-
 
   public PostResponse getPostById(Long postid, User user) {
     Post post = getPostById(postid);
@@ -228,49 +191,42 @@ public class PostService {
     Boolean isStatus = !(status==null);
     Boolean isLocation = !(location==null);
     Boolean isTitle = !(title==null);
-    if (true == !isStatus && !isLocation && !isTitle) {
-      return getPostList(user);
-    } else if (true == isStatus && !isLocation && !isTitle) {
-      return getPostListByStatus(status, user);
-    } else if (true == !isStatus && isLocation && !isTitle) {
-      return getPostListByLocation(location, user);
-    } else if (true == !isStatus && !isLocation && isTitle) {
-      return getPostListByTitle(title, user);
-    } else if (true == isStatus && isLocation && !isTitle) {
-      return getPostListByStatusAndLocation(status, location, user);
-    } else if (true == isStatus && !isLocation && isTitle) {
-      return getPostListByStatusAndTitle(status, title, user);
-    } else if (true == !isStatus && isLocation && isTitle) {
-      return getPostListByLocationAndTitle(location, title, user);
-    } else if (true == isStatus && isLocation && isTitle) {
-      return getPostListByStatusAndLocationAndTitle(status, location, title, user);
-    }
-    else
-      throw new IllegalArgumentException("오류입니다.");
-  }
-
-  private List<PostResponse> getPostListByStatusAndLocationAndTitle(String status, String location, String title, User user) {
-    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
-    LocationEnum locationEnum = LocationEnum.valueOf(location);
-    List<Post> postList = postRepository.findAllByStatusAndLocation(postStatusEnum, locationEnum);
-    return filterPostListByTitle(postList, title, user);
-  }
-
-  private List<PostResponse> getPostListByLocationAndTitle(String location, String title, User user) {
-    LocationEnum locationEnum = LocationEnum.valueOf(location);
-    List<Post> postList = postRepository.findAllByLocation(locationEnum);
-    return filterPostListByTitle(postList, title, user);
-  }
-
-  private List<PostResponse> getPostListByStatusAndTitle(String status, String title, User user) {
-    PostStatusEnum postStatusEnum = PostStatusEnum.valueOf(status);
-    List<Post> postList = postRepository.findAllByStatus(postStatusEnum);
-    return filterPostListByTitle(postList, title, user);
-  }
-
-  private List<PostResponse> getPostListByTitle(String title, User user){
     List<Post> postList = postRepository.findAll();
-    return filterPostListByTitle(postList, title, user);
+    if(isStatus)
+      postList = filterByStatus(postList, status);
+    if(isLocation)
+      postList = filterByLocation(postList, location);
+    if(isTitle)
+      postList = filterByTitle(postList, title);
+    return createPostResponseList(postList, user);
   }
+
+  private List<Post> filterByStatus(List<Post> postList, String status){
+    List<Post> posts = new ArrayList<>();
+    for (Post post : postList) {
+      if(post.getStatus().getLabel().equals(status))
+        posts.add(post);
+    }
+    return posts;
+  }
+
+  private List<Post> filterByLocation(List<Post> postList, String location){
+    List<Post> posts = new ArrayList<>();
+    for (Post post : postList) {
+      if(post.getLocation().getLabel().equals(location))
+        posts.add(post);
+    }
+    return posts;
+  }
+
+  private List<Post> filterByTitle(List<Post> postList, String title){
+    List<Post> posts = new ArrayList<>();
+    for (Post post : postList) {
+      if(post.getTitle().contains(title))
+        posts.add(post);
+    }
+    return posts;
+  }
+
 
 }
