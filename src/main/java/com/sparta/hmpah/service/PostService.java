@@ -140,7 +140,7 @@ public class PostService {
   public String joinPost(Long postid, User user) {
     Post post = getPostById(postid);
 
-    if(post.getUser().equals(user))
+    if(post.getUser().getId().equals(user.getId()))
       throw new IllegalArgumentException("자신의 게시물에는 반드시 참여해야 합니다.");
 
     Optional<PostMember> postMember = Optional.ofNullable(
