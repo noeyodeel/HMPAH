@@ -86,21 +86,25 @@ public class KakaoService {
             .encode()
             .build()
             .toUri();
-
+   
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity.post(uri)
-            .headers(headers).body(new LinkedMultiValueMap<>());
+        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+            .post(uri)
+            .headers(headers)
+            .body(new LinkedMultiValueMap<>());
 
-
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+            requestEntity,
+            String.class
+        );
 
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         Long id = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
-        
+
       return new KakaoUserInfoDto(id, email);
     }
 
@@ -119,9 +123,7 @@ public class KakaoService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
                 String email = kakaoUserInfo.getEmail();
-              
-                kakaoUser = new User(encodedPassword, email,
-                    UserRoleEnum.USER, kakaoId);
+
 
                 kakaoUser = new User(encodedPassword, email, UserRoleEnum.USER, kakaoId);
 

@@ -17,7 +17,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,7 +39,7 @@ public class HomeController {
 
     @Operation(summary = "메인", description = "메인페이지")
     @GetMapping("/")
-    public String home(@AuthenticationPrincipal UserDetails userDetails) {
+    public String home() {
         return "index";
     }
 
@@ -81,7 +80,6 @@ public class HomeController {
         response.addCookie(cookie);
 
         return "redirect:/user/additional-info";
-
     }
 
     @GetMapping("/user/additional-info")

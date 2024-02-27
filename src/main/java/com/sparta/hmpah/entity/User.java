@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -46,6 +47,16 @@ public class User {
 
     private Long kakaoId;
 
+    public void updateInfo(String nickname,String profile,UserGenderEnum gender,Integer age){
+        this.nickname = nickname;
+        this.profile = profile;
+        this.gender = gender;
+        this.age = age;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 
     public User(String username, String password, String nickname, String email,
         UserRoleEnum role) {
