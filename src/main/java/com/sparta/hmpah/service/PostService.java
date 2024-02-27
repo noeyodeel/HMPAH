@@ -3,6 +3,7 @@ package com.sparta.hmpah.service;
 import com.sparta.hmpah.dto.requestDto.PostRequest;
 import com.sparta.hmpah.dto.responseDto.PostResponse;
 import com.sparta.hmpah.entity.Comment;
+import com.sparta.hmpah.entity.Follow;
 import com.sparta.hmpah.entity.LocationEnum;
 import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.PostLike;
@@ -35,10 +36,14 @@ public class PostService {
   private final FollowRepository followRepository;
 
   public List<PostResponse> getPostListByFollow(User user) {
-    List<User> followings = followRepository.findAllByFollower(user);
+    List<Follow> followings = followRepository.findByFollower(user);
+    List<User> followingUserList = new ArrayList<>();
+    for (Follow following : followings) {
+      followingUserList.add(following.getFollowing());
+    }
     List<Post> postList = new ArrayList<>();
 
-    for (User following : followings) {
+    for (User following : followingUserList) {
       postList.addAll(postRepository.findAllByUser(following));
     }
 
@@ -72,6 +77,7 @@ public class PostService {
       throw new IllegalArgumentException("모집인원은 0보다 커야합니다.");
     Post post = postRepository.save(new Post(postRequest, user));
     postMemberRepository.save(new PostMember(post, user));
+    post.updateStatus(getCurrentCount(post));
 
     return createPostResponse(post, user);
   }
@@ -87,6 +93,7 @@ public class PostService {
       throw new IllegalArgumentException("모집인원은 현재 인원보다 커야 합니다.");
 
     post.update(postRequest);
+    post.updateStatus(getCurrentCount(post));
     return createPostResponse(post, user);
   }
 
@@ -133,23 +140,25 @@ public class PostService {
   public String joinPost(Long postid, User user) {
     Post post = getPostById(postid);
 
-    if(post.getUser().getUsername().equals(user.getUsername()))
+    if(post.getUser().equals(user))
       throw new IllegalArgumentException("자신의 게시물에는 반드시 참여해야 합니다.");
 
     Optional<PostMember> postMember = Optional.ofNullable(
         postMemberRepository.findByPostAndUser(post, user));
     if(postMember.isPresent()){
       postMemberRepository.deleteById(postMember.get().getId());
+      post.updateStatus(getCurrentCount(post));
       return "게시물에 참여를 취소합니다.";
     }
     else {
       if(post.getStatus().equals(PostStatusEnum.COMPLETED))
         return "모집인원이 가득 찼습니다.";
       postMemberRepository.save(new PostMember(post, user));
+      post.updateStatus(getCurrentCount(post));
       return "게시물에 참여하셨습니다.";
     }
   }
-  public Integer getCurrentCount(Post post){
+  private Integer getCurrentCount(Post post){
     return postMemberRepository.findAllByPost(post).size();
   }
 
@@ -163,19 +172,16 @@ public class PostService {
     return postMember.isPresent();
   }
 
-  @Transactional
   public List<PostResponse> createPostResponseList(List<Post> postList, User user){
     List<PostResponse> postResponseList = new ArrayList<>();
     for (Post post : postList) {
-      post.updateStatus(getCurrentCount(post));
       postResponseList.add(new PostResponse(post, getCurrentCount(post), getLikescnt(post), getIsMember(post, user)));
     }
     return postResponseList;
   }
 
-  @Transactional
+
   public PostResponse createPostResponse(Post post, User user){
-    post.updateStatus(getCurrentCount(post));
     return new PostResponse(post, getCurrentCount(post), getLikescnt(post), getIsMember(post, user));
   }
 
