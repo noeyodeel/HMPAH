@@ -48,25 +48,25 @@ public class HomeController {
         return "login";
     }
 
-    @GetMapping("/user/signup")
-    public String signupPage() {
-        return "signup";
-    }
-
-    @Operation(summary = "회원가입", description = "일반유저 회원가입")
-    @PostMapping("/user/signup")
-    public String signup(@Valid SignupRequest requestDto, BindingResult bindingResult) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if(fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            return "redirect:/user/signup";
-        }
-        userService.signup(requestDto);
-        return "redirect:/user/login-page";
-    }
+//    @GetMapping("/user/signup")
+//    public String signupPage() {
+//        return "signup";
+//    }
+//
+//    @Operation(summary = "회원가입", description = "일반유저 회원가입")
+//    @PostMapping("/user/signup")
+//    public String signup(@Valid SignupRequest requestDto, BindingResult bindingResult) {
+//        // Validation 예외처리
+//        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+//        if(fieldErrors.size() > 0) {
+//            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+//                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+//            }
+//            return "redirect:/user/signup";
+//        }
+//        userService.signup(requestDto);
+//        return "redirect:/user/login-page";
+//    }
 
     @GetMapping("api/user/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response,

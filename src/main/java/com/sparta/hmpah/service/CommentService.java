@@ -9,10 +9,7 @@ import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.User;
 import com.sparta.hmpah.repository.CommentLikeRepository;
 import com.sparta.hmpah.repository.CommentRepository;
-import com.sparta.hmpah.repository.PostLikeRepository;
 import com.sparta.hmpah.repository.PostRepository;
-import com.sparta.hmpah.repository.UserRepository;
-import com.sparta.hmpah.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-  private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
-  private final PostLikeRepository postLikeRepository;
   private final CommentLikeRepository commentLikeRepository;
 
   public List<CommentResponse> getComments(Long postId) { // 게시글 id를 기준으로 속해있는 모든 댓글을 가져옴
@@ -127,8 +122,16 @@ public class CommentService {
       for(Comment c : childList){
         deleteChild(c.getId());//재귀 호출로 하위 댓글에대한 모든 삭제 처리
       }
+      deleting(id);//댓글 삭제;
     }else{
-      commentRepository.deleteById(id);// 하위 댓글이 없다면 삭제후 재귀호출의 중단
+      deleting(id);// 하위 댓글이 없다면 삭제후 재귀호출의 중단
+    }
+  }
+
+  private void deleting(Long id){
+    commentRepository.deleteById(id);
+    if(commentLikeRepository.existsByCommentId(id)){//댓글에 대한 좋아요 조회
+      commentLikeRepository.deleteAllByCommentId(id);//좋아요 삭제
     }
   }
 }
