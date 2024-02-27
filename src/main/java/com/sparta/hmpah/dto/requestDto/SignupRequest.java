@@ -1,6 +1,5 @@
 package com.sparta.hmpah.dto.requestDto;
 
-import com.sparta.hmpah.entity.UserGenderEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -9,7 +8,7 @@ import org.hibernate.validator.constraints.Email;
 
 @Getter
 @Setter
-public class SignupRequest {
+public class SignupRequest extends LoginInfoRequest {
 
     @NotBlank
     @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d).{4,10}$",
@@ -21,18 +20,9 @@ public class SignupRequest {
         message = "비밀번호는 최소 8자 이상, 15자 이하로 알파벳과 특수문자, 숫자로 구성되어야 합니다.")
     private String password;
 
-    @Pattern(regexp = "^[a-zA-Z0-9가-힣\\d]{2,10}$",
-        message = "닉네임은 2~10자로 구성되어야 합니다.")
-    private String nickname;
-
     @Email
     @NotBlank
     private String email;
 
-    private UserGenderEnum gender;
-    private Integer age;
-    private String profile;
-    private boolean admin = false;
-    private String adminToken = "";
 
 }
