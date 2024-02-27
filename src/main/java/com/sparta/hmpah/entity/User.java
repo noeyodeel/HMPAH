@@ -1,6 +1,7 @@
 package com.sparta.hmpah.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Setter
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -29,7 +31,7 @@ public class User {
     @Column
     private String profile;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String nickname;
 
     @Column
@@ -45,6 +47,16 @@ public class User {
 
     private Long kakaoId;
 
+    public void updateInfo(String nickname,String profile,UserGenderEnum gender,Integer age){
+        this.nickname = nickname;
+        this.profile = profile;
+        this.gender = gender;
+        this.age = age;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 
     public User(String username, String password, String nickname, String email,
         UserRoleEnum role) {
@@ -55,8 +67,8 @@ public class User {
         this.role = role;
     }
 
-    public User(String nickname, String password, String email, UserRoleEnum role, Long kakaoId) {
-        this.nickname = nickname;
+
+    public User( String password, String email, UserRoleEnum role, Long kakaoId) {
         this.password = password;
         this.email = email;
         this.role = role;
@@ -67,4 +79,10 @@ public class User {
         this.kakaoId = kakaoId;
         return this;
     }
+
+    public User nicknameUpdate(String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
+
 }

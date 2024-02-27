@@ -67,7 +67,7 @@ public class WebSecurityConfig {
                 .permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/api/user/**").permitAll()
-                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/user/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
         );
         http.formLogin((formLogin) ->
