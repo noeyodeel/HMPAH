@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "User", description = "User API")
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/users/")
+@RequestMapping("/users")
 @Controller
 public class UserController {
 
