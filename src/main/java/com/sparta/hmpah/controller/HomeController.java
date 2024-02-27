@@ -68,7 +68,6 @@ public class HomeController {
         return "redirect:/user/login-page";
     }
 
-
     @GetMapping("api/user/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response,
         HttpServletRequest request)
@@ -104,6 +103,4 @@ public class HomeController {
         }
     }
 }
-
-
 
