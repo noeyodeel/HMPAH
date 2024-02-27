@@ -12,8 +12,10 @@
   const href = location.href;
   const host = 'http://' + window.location.host;
   function logout() {
-    // 토큰 삭제
     Cookies.remove('Authorization', {path: '/'});
+    window.location.href = host + '/user/login-page';
+  }
+  if (!Cookies.get('Authorization')) {
     window.location.href = host + '/user/login-page';
   }
 </script>

@@ -1,7 +1,7 @@
 package com.sparta.hmpah.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.hmpah.dto.requestDto.AdditionalInfoRequest;
+import com.sparta.hmpah.dto.requestDto.LoginInfoRequest;
 import com.sparta.hmpah.dto.requestDto.SignupRequest;
 import com.sparta.hmpah.jwt.JwtUtil;
 import com.sparta.hmpah.security.UserDetailsImpl;
@@ -17,6 +17,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,7 @@ public class HomeController {
 
     @Operation(summary = "메인", description = "메인페이지")
     @GetMapping("/")
-    public String home() {
+    public String home(@AuthenticationPrincipal UserDetails userDetails) {
         return "index";
     }
 
@@ -85,18 +86,18 @@ public class HomeController {
 
     @GetMapping("/user/additional-info")
     public String additionalInfoPage(Model model) {
-        model.addAttribute("additionalInfoDto", new AdditionalInfoRequest());
+        model.addAttribute("additionalInfoDto", new LoginInfoRequest());
 
         return "additional-info";
     }
     @Operation(summary = "회원가입", description = "카톡유저 회원가입")
     @PostMapping("/user/additional-info")
-    public String submitAdditionalInfo(@RequestBody AdditionalInfoRequest additionalInfoRequest,
+    public String submitAdditionalInfo(@RequestBody LoginInfoRequest loginInfoRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             Long userId = userDetails.getUser().getKakaoId();
 
-            userService.updateKakaoUserNickname(userId, additionalInfoRequest);
+            userService.updateKakaoUserNickname(userId, loginInfoRequest);
 
             return "redirect:/";
         } catch (Exception e) {
