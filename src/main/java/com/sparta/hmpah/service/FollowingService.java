@@ -69,9 +69,10 @@ public class FollowingService {
     public FollowingResponse following(User user, Long followingId) {
         User findUser = userRepository.findById(user.getId()).orElseThrow();
         User following = userRepository.findById(followingId).orElseThrow();
-
+        if(followRepository.existsByFollowerAndFollowing(findUser, following)){
+            throw new IllegalArgumentException("팔로잉 되어 있습니다.");
+        }
         Follow save = followRepository.save(new Follow(findUser, following));
-
         return new FollowingResponse(save.getFollowing().getUsername(), save.getFollowing().getNickname());
     }
 }
