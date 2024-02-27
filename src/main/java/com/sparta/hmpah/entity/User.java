@@ -56,6 +56,7 @@ public class User {
         this.role = role;
     }
 
+
     public User( String password, String email, UserRoleEnum role, Long kakaoId) {
         this.password = password;
         this.email = email;
@@ -67,8 +68,10 @@ public class User {
         this.kakaoId = kakaoId;
         return this;
     }
+
     public User nicknameUpdate(String nickname) {
         this.nickname = nickname;
         return this;
     }
+
 }

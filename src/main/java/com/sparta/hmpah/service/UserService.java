@@ -1,5 +1,6 @@
 package com.sparta.hmpah.service;
 
+
 import com.sparta.hmpah.dto.requestDto.AdditionalInfoRequest;
 import com.sparta.hmpah.dto.requestDto.SignupRequest;
 import com.sparta.hmpah.entity.User;
@@ -24,6 +25,7 @@ public class UserService {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
         String nickname = requestDto.getNickname();
+
         String email = requestDto.getEmail();
         String profile = requestDto.getProfile();
         Integer age = requestDto.getAge();
@@ -89,8 +91,9 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
             return role;
         }
-        return role;
+      return role;
     }
+ 
     private void validEmail(String email) {
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {

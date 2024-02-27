@@ -23,9 +23,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Home", description = "Home API")
 @Slf4j
@@ -36,6 +35,7 @@ public class HomeController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
+
 
     @Operation(summary = "메인", description = "메인페이지")
     @GetMapping("/")
@@ -52,12 +52,13 @@ public class HomeController {
     public String signupPage() {
         return "signup";
     }
+
     @Operation(summary = "회원가입", description = "일반유저 회원가입")
     @PostMapping("/user/signup")
     public String signup(@Valid SignupRequest requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
+        if(fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
@@ -67,6 +68,7 @@ public class HomeController {
 
         return "redirect:/user/login-page";
     }
+
 
     @GetMapping("api/user/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response,
@@ -102,3 +104,8 @@ public class HomeController {
         }
     }
 }
+        return "redirect:/user/kakao/login";
+    }
+
+}
+

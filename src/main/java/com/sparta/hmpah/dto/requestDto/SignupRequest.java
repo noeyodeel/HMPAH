@@ -21,7 +21,6 @@ public class SignupRequest {
         message = "비밀번호는 최소 8자 이상, 15자 이하로 알파벳과 특수문자, 숫자로 구성되어야 합니다.")
     private String password;
 
-    @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9가-힣\\d]{2,10}$",
         message = "닉네임은 2~10자로 구성되어야 합니다.")
     private String nickname;
