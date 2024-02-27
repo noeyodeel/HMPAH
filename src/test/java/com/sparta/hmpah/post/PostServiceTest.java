@@ -44,6 +44,7 @@ public class PostServiceTest {
     //given
     Long postId = 100L;
     User user = new User();
+    user.setId(100L);
     PostRequest postRequest = new PostRequest(
         "title",
         "content",
@@ -87,7 +88,9 @@ public class PostServiceTest {
     //given
     Long postId = 100L;
     User user = new User();
+    user.setId(100L);
     User user1 = new User();
+    user1.setId(200L);
     PostRequest postRequest = new PostRequest(
         "title",
         "content",
