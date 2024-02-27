@@ -1,5 +1,6 @@
 package com.sparta.hmpah.dto.requestDto;
 
+import com.sparta.hmpah.entity.UserGenderEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -28,6 +29,8 @@ public class SignupRequest {
     @NotBlank
     private String email;
 
+    private UserGenderEnum gender;
+    private Integer age;
     private String profile;
     private boolean admin = false;
     private String adminToken = "";
