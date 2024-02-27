@@ -3,8 +3,10 @@ package com.sparta.hmpah.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.hmpah.dto.requestDto.AdditionalInfoRequest;
 import com.sparta.hmpah.dto.responseDto.KakaoUserInfoDto;
 import com.sparta.hmpah.entity.User;
+import com.sparta.hmpah.entity.UserGenderEnum;
 import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.jwt.JwtUtil;
 import com.sparta.hmpah.repository.UserRepository;
@@ -52,8 +54,12 @@ public class KakaoService {
 
     private String getToken(String code) throws JsonProcessingException {
 
-        URI uri = UriComponentsBuilder.fromUriString("https://kauth.kakao.com").path("/oauth/token")
-            .encode().build().toUri();
+        URI uri = UriComponentsBuilder
+            .fromUriString("https://kauth.kakao.com")
+            .path("/oauth/token")
+            .encode()
+            .build()
+            .toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -69,14 +75,19 @@ public class KakaoService {
 
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
+
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
     }
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-
-        URI uri = UriComponentsBuilder.fromUriString("https://kapi.kakao.com").path("/v2/user/me")
-            .encode().build().toUri();
+        
+        URI uri = UriComponentsBuilder
+            .fromUriString("https://kapi.kakao.com")
+            .path("/v2/user/me")
+            .encode()
+            .build()
+            .toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -85,12 +96,14 @@ public class KakaoService {
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity.post(uri)
             .headers(headers).body(new LinkedMultiValueMap<>());
 
+
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         Long id = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
-        return new KakaoUserInfoDto(id, email);
+        
+      return new KakaoUserInfoDto(id, email);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
@@ -105,10 +118,12 @@ public class KakaoService {
                 kakaoUser = sameEmailUser;
                 kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
             } else {
-                // password: random UUID
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
                 String email = kakaoUserInfo.getEmail();
+              
+                kakaoUser = new User(encodedPassword, email,
+                    UserRoleEnum.USER, kakaoId);
 
                 kakaoUser = new User(encodedPassword, email, UserRoleEnum.USER, kakaoId);
 
