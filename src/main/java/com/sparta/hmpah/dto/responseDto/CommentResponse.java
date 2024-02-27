@@ -17,6 +17,8 @@ public class CommentResponse {
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
   private Integer likescnt;
+  private Long parentId;
+  private int position;
 
   public CommentResponse(Comment comment){
     this.id = comment.getId();
@@ -26,5 +28,7 @@ public class CommentResponse {
     this.createdAt = comment.getCreatedAt();
     this.modifiedAt = comment.getModifiedAt();
     this.likescnt = comment.getCommentLikes().size();
+    this.parentId = comment.getParentId();
+    this.position = comment.getPosition();
   }
 }

@@ -32,15 +32,23 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Column(name = "parent_id")
+    private Long parentId;
+
+    @Column(name = "position")
+    private int position;
+
     @OneToMany
     @JoinColumn(name = "comment_id")
     private List<CommentLike> commentLikes;
 
-    public Comment(CommentRequest requestDto, User userDetails, Post post){
+    public Comment(CommentRequest requestDto, User userDetails, Post post, int position){
         this.content = requestDto.getContent();
         this.user = userDetails;
         this.post = post;
         this.commentLikes = new ArrayList<CommentLike>();
+        this.parentId = requestDto.getParentId();
+        this.position = position;
     }
 
     public void update(CommentRequest requestDto) {

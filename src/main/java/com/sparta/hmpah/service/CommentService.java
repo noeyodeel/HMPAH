@@ -36,7 +36,14 @@ public class CommentService {
 
   public CommentResponse createComment(CommentRequest requestDto,User user) { // 댓글 생성
     Post post = postRepository.findById(requestDto.getPostId()).orElseThrow();
-    Comment comment = new Comment(requestDto, user, post);
+    int position;//대댓글의 위치
+    if(requestDto.getParentId()!=null){
+      if(commentRepository.existsByParentId(requestDto.getParentId())){//대댓글이면서 이전에 작성된 대댓글이 존재
+        List<Comment> childComments = commentRepository.findAllByParentIdOrderByPositionDesc(requestDto.getParentId());//position으로 orderby
+        position = childComments.size()+1;
+      }else position = 1;//대댓글 이나 이전에 작성된 대댓글 없음
+    }else position = 0;//일반 댓글
+    Comment comment = new Comment(requestDto, user, post, position);
     return new CommentResponse(commentRepository.save(comment));
   }
 
@@ -52,14 +59,12 @@ public class CommentService {
     }
   }
 
-  public Long deleteComment(Long id, User user) { //댓글 id를 기준으로 댓글삭제
-    Comment comment = findyComment(id);
-    if (validateUsername(comment, user)) {
-      commentRepository.delete(comment);
-      return id;
-    } else {
-      return -id;
+  public List<CommentResponse> deleteComment(Long id, User user) { //댓글 id를 기준으로 댓글삭제
+    Comment comment = findyComment(id);//댓글 불러옴
+    if (validateUsername(comment, user)) {//작성자 일치
+      deleteChild(id);
     }
+    return commentRepository.findByPostIdOrderByCreatedAtAsc(comment.getPost().getId()).stream().map(CommentResponse::new).toList();
   }
 
   public Comment findyComment(Long id) {// id를 기준으로 댓글 찾아옴
@@ -116,4 +121,14 @@ public class CommentService {
         comment.getId(), user.getUsername()));
   }
 
+  private void deleteChild(Long id){
+    if(commentRepository.existsByParentId(id)){//대댓글 존재
+      List<Comment> childList = commentRepository.findAllByParentIdOrderByPositionDesc(id);
+      for(Comment c : childList){
+        deleteChild(c.getId());//재귀 호출로 하위 댓글에대한 모든 삭제 처리
+      }
+    }else{
+      commentRepository.deleteById(id);// 하위 댓글이 없다면 삭제후 재귀호출의 중단
+    }
+  }
 }
