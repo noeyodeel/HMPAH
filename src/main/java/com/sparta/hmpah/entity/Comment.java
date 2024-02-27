@@ -17,33 +17,42 @@ import lombok.ToString;
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends TimeStamped {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
-    private String content;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @Column(nullable = false)
+  private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @OneToMany
-    @JoinColumn(name = "comment_id")
-    private List<CommentLike> commentLikes;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-    public Comment(CommentRequest requestDto, User userDetails, Post post){
-        this.content = requestDto.getContent();
-        this.user = userDetails;
-        this.post = post;
-        this.commentLikes = new ArrayList<CommentLike>();
-    }
+  @Column(name = "parent_id")
+  private Long parentId;
 
-    public void update(CommentRequest requestDto) {
-        this.content = requestDto.getContent();
-    }
+  @Column(name = "position")
+  private int position;
+
+  @OneToMany
+  @JoinColumn(name = "comment_id")
+  private List<CommentLike> commentLikes;
+
+  public Comment(CommentRequest requestDto, User userDetails, Post post, int position) {
+    this.content = requestDto.getContent();
+    this.user = userDetails;
+    this.post = post;
+    this.commentLikes = new ArrayList<CommentLike>();
+    this.parentId = requestDto.getParentId();
+    this.position = position;
+  }
+
+  public void update(CommentRequest requestDto) {
+    this.content = requestDto.getContent();
+  }
 }

@@ -9,10 +9,7 @@ import com.sparta.hmpah.entity.Post;
 import com.sparta.hmpah.entity.User;
 import com.sparta.hmpah.repository.CommentLikeRepository;
 import com.sparta.hmpah.repository.CommentRepository;
-import com.sparta.hmpah.repository.PostLikeRepository;
 import com.sparta.hmpah.repository.PostRepository;
-import com.sparta.hmpah.repository.UserRepository;
-import com.sparta.hmpah.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-  private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
-  private final PostLikeRepository postLikeRepository;
   private final CommentLikeRepository commentLikeRepository;
 
   public List<CommentResponse> getComments(Long postId) { // 게시글 id를 기준으로 속해있는 모든 댓글을 가져옴
@@ -36,7 +31,14 @@ public class CommentService {
 
   public CommentResponse createComment(CommentRequest requestDto,User user) { // 댓글 생성
     Post post = postRepository.findById(requestDto.getPostId()).orElseThrow();
-    Comment comment = new Comment(requestDto, user, post);
+    int position;//대댓글의 위치
+    if(requestDto.getParentId()!=null){
+      if(commentRepository.existsByParentId(requestDto.getParentId())){//대댓글이면서 이전에 작성된 대댓글이 존재
+        List<Comment> childComments = commentRepository.findAllByParentIdOrderByPositionDesc(requestDto.getParentId());//position으로 orderby
+        position = childComments.size()+1;
+      }else position = 1;//대댓글 이나 이전에 작성된 대댓글 없음
+    }else position = 0;//일반 댓글
+    Comment comment = new Comment(requestDto, user, post, position);
     return new CommentResponse(commentRepository.save(comment));
   }
 
@@ -52,14 +54,12 @@ public class CommentService {
     }
   }
 
-  public Long deleteComment(Long id, User user) { //댓글 id를 기준으로 댓글삭제
-    Comment comment = findyComment(id);
-    if (validateUsername(comment, user)) {
-      commentRepository.delete(comment);
-      return id;
-    } else {
-      return -id;
+  public List<CommentResponse> deleteComment(Long id, User user) { //댓글 id를 기준으로 댓글삭제
+    Comment comment = findyComment(id);//댓글 불러옴
+    if (validateUsername(comment, user)) {//작성자 일치
+      deleteChild(id);
     }
+    return commentRepository.findByPostIdOrderByCreatedAtAsc(comment.getPost().getId()).stream().map(CommentResponse::new).toList();
   }
 
   public Comment findyComment(Long id) {// id를 기준으로 댓글 찾아옴
@@ -116,4 +116,22 @@ public class CommentService {
         comment.getId(), user.getUsername()));
   }
 
+  private void deleteChild(Long id){
+    if(commentRepository.existsByParentId(id)){//대댓글 존재
+      List<Comment> childList = commentRepository.findAllByParentIdOrderByPositionDesc(id);
+      for(Comment c : childList){
+        deleteChild(c.getId());//재귀 호출로 하위 댓글에대한 모든 삭제 처리
+      }
+      deleting(id);//댓글 삭제;
+    }else{
+      deleting(id);// 하위 댓글이 없다면 삭제후 재귀호출의 중단
+    }
+  }
+
+  private void deleting(Long id){
+    commentRepository.deleteById(id);
+    if(commentLikeRepository.existsByCommentId(id)){//댓글에 대한 좋아요 조회
+      commentLikeRepository.deleteAllByCommentId(id);//좋아요 삭제
+    }
+  }
 }

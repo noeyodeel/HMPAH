@@ -65,14 +65,14 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .permitAll()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/api/user/**").permitAll()
-                .requestMatchers("/user/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/**").permitAll()
+                .requestMatchers("/users/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
         );
         http.formLogin((formLogin) ->
             formLogin
-                .loginPage("/user/login-page").permitAll()
+                .loginPage("/users/login-page").permitAll()
         );
 
         // 필터 관리
