@@ -64,7 +64,6 @@ public class HomeController {
             return "redirect:/user/signup";
         }
         userService.signup(requestDto);
-
         return "redirect:/user/login-page";
     }
 
