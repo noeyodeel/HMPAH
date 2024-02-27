@@ -36,15 +36,15 @@ public class UserController {
 
 
 
-//    @PostMapping("/user/signup")
-//    public ResponseEntity<SignupResponse> signup(
-//        @Valid @RequestBody SignupRequest requestDto) {
-//
-//        userService.signup(requestDto);
-//        String message = requestDto.getUsername() + "님 회원가입이 완료되었습니다.";
-//
-//        return ResponseEntity.ok().body(new SignupResponse(message, OK));
-//    }
+    @PostMapping("/user/signup")
+    public ResponseEntity<SignupResponse> signup(
+        @Valid @RequestBody SignupRequest requestDto) {
+
+        userService.signup(requestDto);
+        String message = requestDto.getUsername() + "님 회원가입이 완료되었습니다.";
+
+        return ResponseEntity.ok().body(new SignupResponse(message, OK));
+    }
 
 
 }
