@@ -3,10 +3,8 @@ package com.sparta.hmpah.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.hmpah.dto.requestDto.AdditionalInfoRequest;
 import com.sparta.hmpah.dto.responseDto.KakaoUserInfoDto;
 import com.sparta.hmpah.entity.User;
-import com.sparta.hmpah.entity.UserGenderEnum;
 import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.jwt.JwtUtil;
 import com.sparta.hmpah.repository.UserRepository;
@@ -67,7 +65,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "da69a22183d394b6687ef78454a12c34");
-        body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+        body.add("redirect_uri", "http://localhost:8080/users/kakao/callback");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity.post(uri)
@@ -93,19 +91,21 @@ public class KakaoService {
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity.post(uri)
-            .headers(headers).body(new LinkedMultiValueMap<>());
+        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+            .post(uri)
+            .headers(headers)
+            .body(new LinkedMultiValueMap<>());
 
-
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+            requestEntity,
+            String.class
+        );
 
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         Long id = jsonNode.get("id").asLong();
-
         String email = jsonNode.get("kakao_account").get("email").asText();
-        
-      return new KakaoUserInfoDto(id, email);
 
+      return new KakaoUserInfoDto(id, email);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
@@ -123,9 +123,7 @@ public class KakaoService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
                 String email = kakaoUserInfo.getEmail();
-              
-                kakaoUser = new User(encodedPassword, email,
-                    UserRoleEnum.USER, kakaoId);
+
 
                 kakaoUser = new User(encodedPassword, email, UserRoleEnum.USER, kakaoId);
 
