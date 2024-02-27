@@ -23,20 +23,19 @@ public class PasswordService {
     //전략에 따라 상태코드를 보내도 되고 에러메시지를 보내도 되고 -> 일단 에러메시지만
     @Transactional
     public PasswordResponse updatePassword(User user, PasswordRequest passwordRequest) {
-        User findUser = userRepository.findById(user.getId()).orElseThrow();
-
 
         //비밀번호와 비밀번호확인이 다른 경우
         if(!passwordRequest.getNewPassword().equals(passwordRequest.getCheckPassword())){
             return new PasswordResponse("비밀번호와 비밀번호 확인이 다릅니다.");
         }
-        //기존 비밀번호가 다를 경우
-        if(!passwordEncoder.matches(passwordRequest.getOldPassword(),findUser.getPassword())){
-            return new PasswordResponse("현재 비밀번호가 올바르지 않습니다.");
-        }
         //이전 비밀번호랑 같을 때
         if(passwordRequest.getOldPassword().equals(passwordRequest.getNewPassword())){
             return new PasswordResponse("기존 비밀번호와 일치합니다.");
+        }
+        User findUser = userRepository.findById(user.getId()).orElseThrow();
+        //기존 비밀번호가 다를 경우
+        if(!passwordEncoder.matches(passwordRequest.getOldPassword(),findUser.getPassword())){
+            return new PasswordResponse("현재 비밀번호가 올바르지 않습니다.");
         }
         //비밀번호가 과거 2회 이전에 사용이 되었던 적이 있는 경우
         List<PasswordHistory> passwordHistories = passwordHistoryRepository.findByUser(findUser);
