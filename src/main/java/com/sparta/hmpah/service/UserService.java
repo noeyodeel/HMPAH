@@ -6,7 +6,6 @@ import com.sparta.hmpah.entity.User;
 import com.sparta.hmpah.entity.UserGenderEnum;
 import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +20,6 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    @Transactional
     public void signup(SignupRequest requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -50,7 +48,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
     public void updateKakaoUserNickname(Long id, AdditionalInfoRequest additionalInfo) {
             if (id == null || id <= 0) {
                 throw new IllegalArgumentException("유효하지 않은 ID입니다.");
@@ -106,9 +103,8 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
             return role;
         }
-        return role;
+      return role;
     }
-
     private void validEmail(String email) {
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
