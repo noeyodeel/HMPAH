@@ -13,10 +13,10 @@
   const host = 'http://' + window.location.host;
   function logout() {
     Cookies.remove('Authorization', {path: '/'});
-    window.location.href = host + '/user/login-page';
+    window.location.href = host + '/users/login-page';
   }
   if (!Cookies.get('Authorization')) {
-    window.location.href = host + '/user/login-page';
+    window.location.href = host + '/users/login-page';
   }
 </script>
 <body>
