@@ -81,13 +81,13 @@ public class PostController {
     return postService.deletePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/{postId}/like")
+  @PostMapping("/{postId}/likes")
   @Operation(summary = "게시글 좋아요", description = "ID를 통해 게시글을 좋아요 한다.")
   public String likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.likePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/{postId}/join")
+  @PostMapping("/{postId}/joins")
   @Operation(summary = "모임 참여", description = "ID를 통해 게시글에 참여한다.")
   public String joinPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.joinPost(postId, userDetails.getUser());

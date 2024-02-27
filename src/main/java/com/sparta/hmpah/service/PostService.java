@@ -68,6 +68,8 @@ public class PostService {
 
   @Transactional
   public PostResponse createPost(PostRequest postRequest, User user) {
+    if(postRequest.getMaxcount()<1)
+      throw new IllegalArgumentException("모집인원은 0보다 커야합니다.");
     Post post = postRepository.save(new Post(postRequest, user));
     postMemberRepository.save(new PostMember(post, user));
 
@@ -80,6 +82,9 @@ public class PostService {
 
     if(!getIsOwner(post, user))
       throw new IllegalArgumentException("해당 게시글을 수정할 권한이 없습니다.");
+
+    if(getCurrentCount(post)>postRequest.getMaxcount())
+      throw new IllegalArgumentException("모집인원은 현재 인원보다 커야 합니다.");
 
     post.update(postRequest);
     return createPostResponse(post, user);
