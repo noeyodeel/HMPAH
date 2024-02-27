@@ -20,7 +20,7 @@ public class CommentResponse {
   private Long parentId;
   private int position;
 
-  public CommentResponse(Comment comment){
+  public CommentResponse(Comment comment) {
     this.id = comment.getId();
     this.postTitle = comment.getPost().getTitle();
     this.content = comment.getContent();

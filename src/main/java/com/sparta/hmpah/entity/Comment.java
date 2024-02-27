@@ -17,41 +17,42 @@ import lombok.ToString;
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends TimeStamped {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
-    private String content;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @Column(nullable = false)
+  private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @Column(name = "parent_id")
-    private Long parentId;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-    @Column(name = "position")
-    private int position;
+  @Column(name = "parent_id")
+  private Long parentId;
 
-    @OneToMany
-    @JoinColumn(name = "comment_id")
-    private List<CommentLike> commentLikes;
+  @Column(name = "position")
+  private int position;
 
-    public Comment(CommentRequest requestDto, User userDetails, Post post, int position){
-        this.content = requestDto.getContent();
-        this.user = userDetails;
-        this.post = post;
-        this.commentLikes = new ArrayList<CommentLike>();
-        this.parentId = requestDto.getParentId();
-        this.position = position;
-    }
+  @OneToMany
+  @JoinColumn(name = "comment_id")
+  private List<CommentLike> commentLikes;
 
-    public void update(CommentRequest requestDto) {
-        this.content = requestDto.getContent();
-    }
+  public Comment(CommentRequest requestDto, User userDetails, Post post, int position) {
+    this.content = requestDto.getContent();
+    this.user = userDetails;
+    this.post = post;
+    this.commentLikes = new ArrayList<CommentLike>();
+    this.parentId = requestDto.getParentId();
+    this.position = position;
+  }
+
+  public void update(CommentRequest requestDto) {
+    this.content = requestDto.getContent();
+  }
 }
