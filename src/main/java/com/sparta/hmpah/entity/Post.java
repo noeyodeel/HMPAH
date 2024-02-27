@@ -1,5 +1,7 @@
 package com.sparta.hmpah.entity;
 
+import static com.sparta.hmpah.entity.PostStatusEnum.*;
+
 import com.sparta.hmpah.dto.requestDto.PostRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -42,8 +44,23 @@ public class Post extends TimeStamped {
     public Post(PostRequest postRequest, User user) {
         this.title = postRequest.getTitle();
         this.content = postRequest.getContent();
-        this.maxCount = postRequest.getMaxCount();
-        this.location = postRequest.getLocation();
+        this.maxCount = postRequest.getMaxcount();
+        this.location = LocationEnum.getEnum(postRequest.getLocation());
         this.user = user;
+        this.status = RECRUTING;
+    }
+
+    public void update(PostRequest postRequest) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.maxCount = postRequest.getMaxcount();
+        this.location = LocationEnum.getEnum(postRequest.getLocation());
+    }
+
+    public void updateStatus(Integer currentCount) {
+        if(this.maxCount == currentCount)
+            this.status = COMPLETED;
+        else
+            this.status = RECRUTING;
     }
 }

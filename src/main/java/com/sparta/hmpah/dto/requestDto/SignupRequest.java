@@ -1,5 +1,6 @@
 package com.sparta.hmpah.dto.requestDto;
 
+import com.sparta.hmpah.entity.UserGenderEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class SignupRequest {
     private String username;
 
     @NotBlank
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*.])(?=.*\\d)[a-zA-Z!@#$%^&*.\\d].{8,15}$",
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\W)(?=.*\\d).{8,15}$",
         message = "비밀번호는 최소 8자 이상, 15자 이하로 알파벳과 특수문자, 숫자로 구성되어야 합니다.")
     private String password;
 
@@ -28,6 +29,8 @@ public class SignupRequest {
     @NotBlank
     private String email;
 
+    private UserGenderEnum gender;
+    private Integer age;
     private String profile;
     private boolean admin = false;
     private String adminToken = "";

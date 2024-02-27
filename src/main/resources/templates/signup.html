@@ -11,13 +11,10 @@
   <title>회원가입 페이지</title>
   <script>
     function onclickAdmin() {
-      // Get the checkbox
       var checkBox = document.getElementById("admin-check");
-      // Get the output text
       var box = document.getElementById("admin-token");
-
       // If the checkbox is checked, display the output text
-      if (checkBox.checked == true){
+      if (checkBox.checked == true) {
         box.style.display = "block";
       } else {
         box.style.display = "none";
@@ -39,12 +36,46 @@
     <div class="login-id-label">E-mail</div>
     <input type="text" name="email" placeholder="E-mail" class="login-input-box">
 
+    <div class="login-id-label">Nickname</div>
+    <input type="text" name="nickname" placeholder="nickname" class="login-input-box">
+
+    <div class="login-id-label">age</div>
+    <input type="text" name="age" placeholder="age" class="login-input-box">
+
+    <div class="login-id-label">Gender</div>
+      <button type="button" onclick="selectGender('MALE')">남성</button>
+      <button type="button" onclick="selectGender('FEMALE')">여성</button>
+    <input type="hidden" id="gender" name="gender" required>
+    <br>
+
+    <div class="login-id-label">Profile</div>
+    <input type="text" name="profile" placeholder="profile" class="login-input-box">
+
     <div>
-      <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자
-      <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호" class="login-input-box" style="display:none">
+      <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()"
+             style="margin-top: 40px;">관리자
+      <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호"
+             class="login-input-box" style="display:none">
     </div>
     <button id="login-id-submit">회원 가입</button>
   </form>
+
 </div>
+<script>
+  function selectGender(selectedGender) {
+    document.getElementById("gender").value = selectedGender;
+
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      if (button.textContent.toLowerCase() === selectedGender.toLowerCase()) {
+        button.style.backgroundColor = '#4CAF50';
+        button.style.color = 'white';
+      } else {
+        button.style.backgroundColor = '';
+        button.style.color = '';
+      }
+    });
+  }
+</script>
 </body>
 </html>
