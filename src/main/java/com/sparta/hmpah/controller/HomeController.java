@@ -79,6 +79,7 @@ public class HomeController {
         response.addCookie(cookie);
 
         return "redirect:/user/additional-info";
+
     }
 
     @GetMapping("/user/additional-info")
@@ -102,5 +103,4 @@ public class HomeController {
         }
     }
 }
-
 
