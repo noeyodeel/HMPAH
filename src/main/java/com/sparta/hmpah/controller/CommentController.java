@@ -24,59 +24,59 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/comment")
+@RequestMapping("/comments")
 public class CommentController {
 
   private final CommentService commentService;
 
-  @GetMapping("/get-postId")
+  @GetMapping()
   @Operation(summary = "postId를 기준으로 모든 댓글을 조회", description = "postId를 기준으로 모든 댓글을 조회합니다.")
   public List<CommentResponse> getComments(@RequestParam Long postId) {//postId기준 모든 댓글 조회
     return commentService.getComments(postId);
   }
 
-  @PostMapping("/create")//댓글 생성
+  @PostMapping()//댓글 생성
   @Operation(summary = "댓글 생성", description = "postId와 User를 기준으로 댓글을 생성합니다.")
   public CommentResponse createComment(@RequestBody CommentRequest requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     log.info(userDetails.getUsername());
     log.info("create 호출");
-    return commentService.createComment(requestDto, userDetails);
+    return commentService.createComment(requestDto, userDetails.getUser());
   }
 
   @PutMapping("/{id}")//댓글 수정
   @Operation(summary = "댓글 수정", description = "작성자와 일치하면 commentId를 기준으로 댓글수정합니다.")
   public Comment updateComment(@PathVariable Long id, @RequestBody CommentRequest requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return commentService.updateComment(id, requestDto, userDetails);
+    return commentService.updateComment(id, requestDto, userDetails.getUser());
   }
 
   @DeleteMapping("/{id}")//댓글 삭제
   @Operation(summary = "댓글 삭제", description = "작성자와 일치하면 commentId를 기준으로 댓글을 삭제합니다.")
   public Long deleteComment(@PathVariable Long id,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return commentService.deleteComment(id, userDetails);
+    return commentService.deleteComment(id, userDetails.getUser());
   }
 
-  @GetMapping("/get-like")
+  @GetMapping("/likes")
   @Operation(summary = "댓글 좋아요 조회", description = "commentId를 기준으로 댓글을 조회합니다.")
   public Long countByPostId(@RequestParam Long id) {
     return commentService.countByCommentId(id);
   }
 
-  @PostMapping("/create-like")//댓글 생성
+  @PostMapping("/likes")//댓글 생성
   @Operation(summary = "댓글 좋아요 생성", description = "commentId를 기준으로 댓을의 좋아요를 생성합니다.")
   public Long createCommentLike(@RequestBody CommentLikeRequest requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     log.info("create 호출");
-    return commentService.createCommentLike(requestDto, userDetails);
+    return commentService.createCommentLike(requestDto, userDetails.getUser());
   }
 
-  @DeleteMapping("/delete-like/{id}")
+  @DeleteMapping("/likes/{id}")
   @Operation(summary = "댓글 좋아요 삭제", description = "commentId를 기준으로 댓을의 좋아요를 삭제합니다.")
   public Long deleteCommentLike(@PathVariable Long id,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return commentService.deleteCommentLike(id, userDetails);
+    return commentService.deleteCommentLike(id, userDetails.getUser());
   }
 
 
