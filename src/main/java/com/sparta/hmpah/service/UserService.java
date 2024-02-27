@@ -75,16 +75,7 @@ public class UserService {
         }
     }
 
-    //    private UserRoleEnum validAdmin(SignupRequest requestDto, UserRoleEnum role) {
-//        if (requestDto.isAdmin()) {
-//            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-//                throw new IllegalArgumentException("관리자 인증키가 틀려 등록이 불가능합니다.");
-//            }
-//            role = UserRoleEnum.ADMIN;
-//            return role;
-//        }
-//      return role;
-//    }
+
     private void validEmail(String email) {
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {

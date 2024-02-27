@@ -62,7 +62,6 @@ public class UserController {
         return "redirect:/users/login-page";
     }
 
-
     @GetMapping("/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response,
         HttpServletRequest request)
