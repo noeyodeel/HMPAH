@@ -29,7 +29,7 @@ public class PostController {
 
   @GetMapping
   @Operation(summary = "게시글 목록 조회(옵션)", description = "상태, 지역, 제목 옵션을 통해 게시글 목록을 조회한다.")
-  public List<PostResponse> getPostListByOption(
+  public List<PostResponse> getPost(
       @RequestParam(required = false) String status,
       @RequestParam(required = false) String location,
       @RequestParam(required = false) String title,
@@ -81,13 +81,13 @@ public class PostController {
     return postService.deletePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/like/{postId}")
+  @PostMapping("/{postId}/like")
   @Operation(summary = "게시글 좋아요", description = "ID를 통해 게시글을 좋아요 한다.")
   public String likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.likePost(postId, userDetails.getUser());
   }
 
-  @PostMapping("/join/{postId}")
+  @PostMapping("/{postId}/join")
   @Operation(summary = "모임 참여", description = "ID를 통해 게시글에 참여한다.")
   public String joinPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.joinPost(postId, userDetails.getUser());

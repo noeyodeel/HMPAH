@@ -228,7 +228,6 @@ public class PostService {
     Boolean isStatus = !(status==null);
     Boolean isLocation = !(location==null);
     Boolean isTitle = !(title==null);
-    List<Post> postList = new ArrayList<>();
     if (true == !isStatus && !isLocation && !isTitle) {
       return getPostList(user);
     } else if (true == isStatus && !isLocation && !isTitle) {
