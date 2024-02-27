@@ -8,13 +8,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "posts")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-
+@NoArgsConstructor//(access = AccessLevel.PROTECTED)
 public class Post extends TimeStamped {
 
     @Id
