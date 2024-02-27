@@ -86,7 +86,7 @@ public class KakaoService {
             .encode()
             .build()
             .toUri();
-   
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
