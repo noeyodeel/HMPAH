@@ -103,8 +103,6 @@ public class HomeController {
         }
     }
 }
-        return "redirect:/user/kakao/login";
-    }
 
-}
+
 
