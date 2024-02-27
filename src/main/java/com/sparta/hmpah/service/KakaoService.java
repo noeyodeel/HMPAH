@@ -99,9 +99,11 @@ public class KakaoService {
 
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         Long id = jsonNode.get("id").asLong();
+
         String email = jsonNode.get("kakao_account").get("email").asText();
         
       return new KakaoUserInfoDto(id, email);
+
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {

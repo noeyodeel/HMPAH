@@ -9,6 +9,6 @@ import lombok.Getter;
 public class PostRequest {
     private String title;
     private String content;
-    private LocationEnum location;
-    private Integer maxCount;
+    private String location;
+    private Integer maxcount;
 }
