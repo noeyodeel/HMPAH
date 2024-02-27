@@ -53,7 +53,7 @@ public class CommentController {
 
   @DeleteMapping("/{id}")//댓글 삭제
   @Operation(summary = "댓글 삭제", description = "작성자와 일치하면 commentId를 기준으로 댓글을 삭제합니다.")
-  public Long deleteComment(@PathVariable Long id,
+  public List<CommentResponse> deleteComment(@PathVariable Long id,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return commentService.deleteComment(id, userDetails.getUser());
   }
@@ -78,6 +78,5 @@ public class CommentController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return commentService.deleteCommentLike(id, userDetails.getUser());
   }
-
 
 }
