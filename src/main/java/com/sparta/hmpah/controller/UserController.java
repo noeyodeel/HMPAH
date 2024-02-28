@@ -1,5 +1,7 @@
 package com.sparta.hmpah.controller;
 
+import static java.net.URLEncoder.encode;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.hmpah.dto.requestDto.LoginInfoRequest;
 import com.sparta.hmpah.dto.requestDto.SignupRequest;
@@ -13,7 +15,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +29,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.net.URLEncoder;
 
 @Tag(name = "User", description = "User API")
 @Slf4j
@@ -63,16 +70,24 @@ public class UserController {
     }
 
     @GetMapping("/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response,
-        HttpServletRequest request)
-        throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response)
+        throws JsonProcessingException, UnsupportedEncodingException {
+        Map<String, Object> result = kakaoService.kakaoLogin(code);
+        Boolean existUser = (Boolean) result.get("user");
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        String token = String.valueOf(result.get("createtoken"));
+        String tokenValue = URLEncoder.encode(token, "UTF-8").replaceAll("\\+", "%20");
+
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, tokenValue);
         cookie.setPath("/");
         response.addCookie(cookie);
 
+        if (existUser) {
+            return "redirect:/";
+        }
         return "redirect:/users/additional-info";
+
     }
 
     @GetMapping("/additional-info")
