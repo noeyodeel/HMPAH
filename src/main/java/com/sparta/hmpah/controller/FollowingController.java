@@ -17,14 +17,19 @@ public class FollowingController {
     private final FollowingService followingService;
 
     @GetMapping
-    public List<FollowingResponse> showFollowing(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<FollowingResponse> showFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followingService.showFollowings(userDetails.getUser());
     }
-
     @GetMapping("/{followingId}")
-    public InfoResponse showFollowing(@PathVariable("followingId") Long followingId) {
+    public List<FollowingResponse> showFollowings(@PathVariable("followingId") Long followingId){
+        return followingService.showFollowings(followingId);
+    }
+
+    @GetMapping("/{followingId}/profiles")
+    public InfoResponse showFollowingInfo(@PathVariable("followingId") Long followingId) {
         return followingService.showFollowingInfo(followingId);
     }
+
 
     @PostMapping("/{followingId}")
     public FollowingResponse following(@AuthenticationPrincipal UserDetailsImpl userDetails,
