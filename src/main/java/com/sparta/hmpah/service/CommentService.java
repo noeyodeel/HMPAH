@@ -23,6 +23,7 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final CommentLikeRepository commentLikeRepository;
 
+  @Transactional(readOnly = true)
   public List<CommentResponse> getComments(Long postId) { // 게시글 id를 기준으로 속해있는 모든 댓글을 가져옴
 
     List<Comment> commentList = commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
@@ -43,17 +44,19 @@ public class CommentService {
   }
 
   @Transactional
-  public Comment updateComment(Long id, CommentRequest requestDto,
+  public CommentResponse updateComment(Long id, CommentRequest requestDto,
       User user) { //댓글 id를 기준으로 댓글 update
     Comment comment = findyComment(id);
     if (validateUsername(comment, user)) { // 작성자와 로그인한 user가 일치할 경우에만 업데이트
       comment.update(requestDto);
-      return comment;
+      return new CommentResponse(comment);
     } else {
       throw new IllegalArgumentException("선택한 댓글은 존재하지 않습니다.");
     }
   }
 
+
+  @Transactional
   public List<CommentResponse> deleteComment(Long id, User user) { //댓글 id를 기준으로 댓글삭제
     Comment comment = findyComment(id);//댓글 불러옴
     if (validateUsername(comment, user)) {//작성자 일치
@@ -72,7 +75,7 @@ public class CommentService {
   }
 
   public boolean validateUsername(Comment comment, User user) {
-    if (comment.getUser().getUsername().equals(user.getUsername())) {
+    if (comment.getUser().getId().equals(user.getId())) {
       return true;
     }
     return false;
@@ -92,6 +95,7 @@ public class CommentService {
     return countByCommentId(commentId);
   }
 
+  @Transactional
   public Long deleteCommentLike(Long commentId, User user) {//추천 삭제
     Long userId = user.getId();
     if (existsByCommentIdAndUserId(commentId, userId)) {//추천이 존재할 경우에만 삭제
@@ -105,15 +109,16 @@ public class CommentService {
     return commentLikeRepository.existsByCommentIdAndUserId(commentId, userId);
   }
 
-  private boolean checkWriter(Long commentId, String username) {
+
+  private boolean checkWriter(Long commentId, Long userId) {
     Comment comment = commentRepository.findById(commentId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 postId 입니다."));
-    return username.equals(comment.getUser().getUsername());
+    return userId.equals(comment.getUser().getId());
   }
 
   private boolean commentLikeState(Comment comment, User user) {
     return (!existsByCommentIdAndUserId(comment.getId(), user.getId()) && !checkWriter(
-        comment.getId(), user.getUsername()));
+        comment.getId(), user.getId()));
   }
 
   private void deleteChild(Long id){
