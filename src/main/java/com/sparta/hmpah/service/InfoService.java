@@ -30,10 +30,13 @@ public class InfoService {
         int followingCount = followRepository.findByFollower(user).size();
         //post
         List<Post> postsByUser = postRepository.findAllByUser(user);
+        UserGenderEnum genderEnum = findUser.getGender();
+        if(genderEnum == null)
+            genderEnum = UserGenderEnum.UNIDENTIFIED;
         return new InfoResponse(findUser.getUsername(),
                 findUser.getNickname(),
                 findUser.getProfile(),
-                findUser.getGender().getValue(),
+                genderEnum.getValue(),
                 findUser.getAge(),
                 followerCount,
                 followingCount,

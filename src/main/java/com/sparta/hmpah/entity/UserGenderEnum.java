@@ -8,7 +8,8 @@ import java.util.Arrays;
 
 public enum UserGenderEnum {
     MALE("MALE"),
-    FEMALE("FEMALE");
+    FEMALE("FEMALE"),
+    UNIDENTIFIED("알수없음");
 
     @Getter
     private final String value;
