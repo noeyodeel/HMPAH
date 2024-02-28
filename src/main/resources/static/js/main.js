@@ -459,4 +459,19 @@ $(document).ready(function () {
       }
     });
   }
+
+  function createPost(){
+    console.log("실행됨");
+    const edite =
+    `<li class="card" data-post-id="${post.id}">
+      <h1>[${post.id}] ${post.title}</h1>
+      <h3>${post.location}</h3>
+      <p>작성자: ${post.nickname}</p>
+      <p>${post.content}</p>
+      <p>좋아요 : ${post.likescnt}</p>
+      <p>${post.status} ( ${post.currentCount}명 /  ${post.maxCount}명 )</p>
+    </li>`;
+
+    $('#post-list').append(edite);
+  }
 });

@@ -20,6 +20,6 @@ public class HomeController {
     @Operation(summary = "메인", description = "메인페이지")
     @GetMapping("/")
     public String home() {
-        return "index";
+        return "main";
     }
 }
