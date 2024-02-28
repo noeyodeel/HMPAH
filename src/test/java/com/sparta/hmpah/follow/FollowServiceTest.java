@@ -58,7 +58,7 @@ public class FollowServiceTest {
         FollowingService followingService = new FollowingService(userRepository, followRepository, postRepository);
         //when
         when(followRepository.findByFollower(any(User.class))).thenReturn(follows);
-        //when(userRepository.findById(100L)).thenReturn(Optional.of(follower));
+
         given(userRepository.findById(follower.getId())).willReturn(Optional.of(follower));
         List<FollowingResponse> followingResponses = followingService.showFollowings(follower);
         //then
