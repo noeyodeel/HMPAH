@@ -41,9 +41,12 @@
 >![image](https://github.com/noeyodeel/HMPAH/assets/54929479/a7510c12-5029-4041-a41a-de6ac690e1cc)
 
 ### 🗂️ ERD (Entity Relationship Diagram)
->![HMPAHP (1)](https://github.com/noeyodeel/HMPAH/assets/54929479/d23de800-47c7-4668-8d18-3d8f398d388d)
+**************
+>![image](https://github.com/noeyodeel/HMPAH/assets/103111681/42935702-aae6-4472-90d5-cd815ae8dad8)
+
 
 ### 📜API
+**************
 >![스크린샷 2024-02-28 174324](https://github.com/noeyodeel/HMPAH/assets/54929479/2c736bf9-8902-4943-8087-24420431906e)
 >![image](https://github.com/noeyodeel/HMPAH/assets/54929479/3e742186-0361-4731-80da-717d9d23249a)
 >![스크린샷 2024-02-28 174419](https://github.com/noeyodeel/HMPAH/assets/54929479/cef0e336-f045-4b32-8652-f5a7868d7f15)
