@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <title>안녕하세요 페이지</title>
+</head>
+<script>
+  const href = location.href;
+  const host = 'http://' + window.location.host;
+  function logout() {
+    Cookies.remove('Authorization', {path: '/'});
+    window.location.href = host + '/users/login-page';
+  }
+  if (!Cookies.get('Authorization')) {
+    window.location.href = host + '/users/login-page';
+  }
+</script>
+<body>
+<h1>안녕하세요!</h1>
+<p>환영합니다. 메인 페이지입니다.</p>
+<button onclick="logout()" id="logout">로그아웃</button>
+</body>
+</html>
