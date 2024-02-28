@@ -5,6 +5,7 @@ import com.sparta.hmpah.dto.responseDto.PostResponse;
 import com.sparta.hmpah.security.UserDetailsImpl;
 import com.sparta.hmpah.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Post", description = "Post API")
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -58,7 +60,7 @@ public class PostController {
   }
 
   @GetMapping("/{postId}")
-  @Operation(summary = "게시글 조회 (게시글 ID)", description = "ID를 통해 게시글을 조회한다.")
+  @Operation(summary = "게시글 조회 (게시글 ID)", description = "게시글 ID를 통해 게시글을 조회한다.")
   public PostResponse getPostById(@PathVariable Long postId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.getPostById(postId, userDetails.getUser());
   }
@@ -70,25 +72,25 @@ public class PostController {
   }
 
   @PutMapping("/{postId}")
-  @Operation(summary = "게시글 수정 (게시글 ID)", description = "ID를 통해 게시글을 수정한다.")
+  @Operation(summary = "게시글 수정 (게시글 ID)", description = "게시글 ID를 통해 게시글을 수정한다.")
   public PostResponse updatePost(@PathVariable Long postId, @RequestBody PostRequest postRequest, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.updatePost(postId, postRequest, userDetails.getUser());
   }
 
   @DeleteMapping("/{postId}")
-  @Operation(summary = "게시글 삭제 (게시글 ID)", description = "ID를 통해 게시글을 삭제한다.")
+  @Operation(summary = "게시글 삭제 (게시글 ID)", description = "게시글 ID를 통해 게시글을 삭제한다.")
   public String deletePost(@PathVariable Long postId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.deletePost(postId, userDetails.getUser());
   }
 
   @PostMapping("/{postId}/likes")
-  @Operation(summary = "게시글 좋아요", description = "ID를 통해 게시글을 좋아요 한다.")
+  @Operation(summary = "게시글 좋아요", description = "게시글 ID를 통해 게시글을 좋아요 한다.")
   public String likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.likePost(postId, userDetails.getUser());
   }
 
   @PostMapping("/{postId}/joins")
-  @Operation(summary = "모임 참여", description = "ID를 통해 게시글에 참여한다.")
+  @Operation(summary = "모임 참여", description = "게시글 ID를 통해 게시글에 참여한다.")
   public String joinPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
     return postService.joinPost(postId, userDetails.getUser());
   }

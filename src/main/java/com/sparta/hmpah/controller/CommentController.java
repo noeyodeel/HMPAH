@@ -46,7 +46,7 @@ public class CommentController {
 
   @PutMapping("/{id}")//댓글 수정
   @Operation(summary = "댓글 수정", description = "작성자와 일치하면 commentId를 기준으로 댓글수정합니다.")
-  public Comment updateComment(@PathVariable Long id, @RequestBody CommentRequest requestDto,
+  public CommentResponse updateComment(@PathVariable Long id, @RequestBody CommentRequest requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return commentService.updateComment(id, requestDto, userDetails.getUser());
   }
