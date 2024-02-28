@@ -23,9 +23,21 @@ public class FollowerService {
     private final FollowRepository followRepository;
     private final PostRepository postRepository;
 
-    @Transactional
+
     public List<FollowerResponse> showFollowers(User user) {
         User findUser = userRepository.findById(user.getId()).orElseThrow();
+        //follower들 찾기
+        List<Follow> followers = followRepository.findByFollowing(findUser);
+        List<FollowerResponse> followerResponses = new ArrayList<>();
+
+        for (Follow follower : followers) {
+            followerResponses.add(new FollowerResponse(follower.getFollower().getUsername(), follower.getFollower().getNickname()));
+        }
+
+        return followerResponses;
+    }
+    public List<FollowerResponse> showFollowers(Long userId) {
+        User findUser = userRepository.findById(userId).orElseThrow();
         //follower들 찾기
         List<Follow> followers = followRepository.findByFollowing(findUser);
         List<FollowerResponse> followerResponses = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.sparta.hmpah.controller;
 
 import com.sparta.hmpah.dto.responseDto.FollowerResponse;
+import com.sparta.hmpah.dto.responseDto.FollowingResponse;
 import com.sparta.hmpah.dto.responseDto.InfoResponse;
 import com.sparta.hmpah.security.UserDetailsImpl;
 import com.sparta.hmpah.service.FollowerService;
@@ -21,9 +22,13 @@ public class FollowerController {
     public List<FollowerResponse> showFollowers(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followerService.showFollowers(userDetails.getUser());
     }
-
     @GetMapping("/{followerId}")
-    public InfoResponse showFollower(@PathVariable("followerId") Long followerId) {
+    public List<FollowerResponse> showFollowings(@PathVariable("followerId") Long followerId){
+        return followerService.showFollowers(followerId);
+    }
+
+    @GetMapping("/{followerId}/profiles")
+    public InfoResponse showFollowerInfo(@PathVariable("followerId") Long followerId) {
         return followerService.showFollowerInfo(followerId);
     }
 
