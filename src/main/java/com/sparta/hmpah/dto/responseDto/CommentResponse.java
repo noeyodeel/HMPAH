@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class CommentResponse {
 
   private Long id;
+  private Long userId;
   private String postTitle;
   private String content;
   private String nickname;
@@ -22,6 +23,7 @@ public class CommentResponse {
 
   public CommentResponse(Comment comment) {
     this.id = comment.getId();
+    this.userId = comment.getUser().getId();
     this.postTitle = comment.getPost().getTitle();
     this.content = comment.getContent();
     this.nickname = comment.getUser().getNickname();

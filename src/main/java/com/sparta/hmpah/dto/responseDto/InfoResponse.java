@@ -22,12 +22,7 @@ public class InfoResponse {
         this.nickname = nickname;
         this.profile = profile;
         this.age = age;
-        if(gender == null){
-            this.gender = "FEMALE";
-        }
-        else {
-            this.gender = gender;
-        }
+        this.gender = gender;
         this.followerCount = followerCount;
         this.followingCount = followingCount;
         this.posts = posts;

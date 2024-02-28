@@ -18,6 +18,7 @@ public class PostResponse {
     private String content;
     private String location;
     private String nickname;
+    private Long userId;
     private String status;
     private Integer maxCount;
     private Integer currentCount;
@@ -28,6 +29,7 @@ public class PostResponse {
 
     public PostResponse(Post post, Integer currentCount, Integer likescnt, Boolean isMember) {
         this.id = post.getId();
+        this.userId = post.getUser().getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.location = post.getLocation().getLabel();
