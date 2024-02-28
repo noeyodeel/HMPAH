@@ -9,6 +9,9 @@ import com.sparta.hmpah.entity.UserRoleEnum;
 import com.sparta.hmpah.jwt.JwtUtil;
 import com.sparta.hmpah.repository.UserRepository;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,9 @@ public class KakaoService {
     private final JwtUtil jwtUtil;
 
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public Map<String, Object> kakaoLogin(String code) throws JsonProcessingException {
+        Map<String, Object> result = new HashMap<>();
+
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -47,7 +52,9 @@ public class KakaoService {
         //4. JWT 토큰 반환
         String createtoken = jwtUtil.createToken(kakoUser.getUsername(), kakoUser.getRole());
 
-        return createtoken;
+        result.put("user", kakoUser.isExistUser());
+        result.put("createtoken", createtoken);
+        return result;
     }
 
     private String getToken(String code) throws JsonProcessingException {
@@ -73,13 +80,12 @@ public class KakaoService {
 
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
-
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
     }
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-        
+
         URI uri = UriComponentsBuilder
             .fromUriString("https://kapi.kakao.com")
             .path("/v2/user/me")
@@ -105,7 +111,7 @@ public class KakaoService {
         Long id = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
 
-      return new KakaoUserInfoDto(id, email);
+        return new KakaoUserInfoDto(id, email);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
@@ -119,11 +125,11 @@ public class KakaoService {
             if (sameEmailUser != null) {
                 kakaoUser = sameEmailUser;
                 kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
+                kakaoUser.setExistUser(true);
             } else {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
                 String email = kakaoUserInfo.getEmail();
-
 
                 kakaoUser = new User(encodedPassword, email, UserRoleEnum.USER, kakaoId);
 
