@@ -368,6 +368,20 @@ button {
   box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
+#sign-form {
+  width: 538px;
+  height: 1250px;
+  margin: 70px auto 141px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  /*gap: 96px;*/
+  padding: 56px 0 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+}
 
 #login-title {
   width: 303px;
@@ -459,6 +473,7 @@ button {
   text-align: left;
   color: #212529;
 }
+
 
 #login-id-submit {
   border-width: 0;

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
@@ -46,6 +45,7 @@ public class User {
     private UserRoleEnum role;
 
     private Long kakaoId;
+    private boolean isExistUser = false;
 
     public void updateInfo(String nickname,String profile,UserGenderEnum gender,Integer age){
         this.nickname = nickname;

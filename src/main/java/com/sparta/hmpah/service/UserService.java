@@ -56,6 +56,7 @@ public class UserService {
         if (additionalInfo == null) {
             throw new IllegalArgumentException("AdditionalInfo가 제공되지 않았습니다.");
         }
+
         try {
             User kakaoUser = userRepository.findByKakaoId(id).orElse(null);
 
