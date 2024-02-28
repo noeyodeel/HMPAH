@@ -1,7 +1,5 @@
 package com.sparta.hmpah.controller;
 
-import com.sparta.hmpah.service.KakaoService;
-import com.sparta.hmpah.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,6 @@ public class HomeController {
     @Operation(summary = "메인", description = "메인페이지")
     @GetMapping("/")
     public String home() {
-        return "index";
+        return "main";
     }
 }

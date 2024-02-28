@@ -29,9 +29,9 @@ public class CommentController {
 
   private final CommentService commentService;
 
-  @GetMapping()
+  @GetMapping("/{postId}")
   @Operation(summary = "postId를 기준으로 모든 댓글을 조회", description = "postId를 기준으로 모든 댓글을 조회합니다.")
-  public List<CommentResponse> getComments(@RequestParam Long postId) {//postId기준 모든 댓글 조회
+  public List<CommentResponse> getComments(@PathVariable Long postId) {//postId기준 모든 댓글 조회
     return commentService.getComments(postId);
   }
 
