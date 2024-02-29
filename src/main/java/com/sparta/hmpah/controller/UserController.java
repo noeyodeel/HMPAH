@@ -102,8 +102,10 @@ public class UserController {
     @PostMapping("/additional-info")
     public String submitAdditionalInfo(@RequestBody LoginInfoRequest loginInfoRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            log.info("확인");
         try {
-            Long userId = userDetails.getUser().getKakaoId();
+            log.info("확인");
+            Long userId = Long.valueOf(userDetails.getUser().getUsername());
             userService.updateKakaoUserNickname(userId, loginInfoRequest);
 
             return "redirect:/";

@@ -35,6 +35,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(tokenValue)) {
 
+            tokenValue = jwtUtil.substringToken(tokenValue);
+
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
@@ -58,7 +60,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
-
+        log.info("인증처리");
         SecurityContextHolder.setContext(context);
     }
 
